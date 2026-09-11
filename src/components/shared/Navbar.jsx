@@ -75,18 +75,26 @@ const Navbar = () => {
                             <li>
                                 <Link href="/about">About</Link>
                             </li>
+                            <li className="mt-2 pt-2 border-t border-base-200 sm:hidden">
+                                <Link
+                                    href="/login"
+                                    className="btn btn-sm bg-gradient-to-r from-[#059669] to-[#047857] text-white font-bold flex items-center justify-center gap-2 hover:shadow-lg"
+                                >
+                                    Login <FaArrowRight />
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <div className="flex gap-2 items-center">
                         <Image src={'/images/logo.jpeg'} alt="logo" width={40} height={40} className="object-cover" />
-                         <Link href={'/'} className="btn btn-ghost text-xl text-[#047857] font-semibold">NogorBondhu</Link>
+                        <Link href={'/'} className="btn btn-ghost text-xl text-[#047857] font-semibold">NogorBondhu</Link>
                     </div>
-                   
+
                 </div>
 
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1 text-[ #475569]">
-                        <li >
+                        <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
                             <Link href="/">Home</Link>
                         </li>
 
@@ -140,7 +148,7 @@ const Navbar = () => {
                     </ul>
                 </div>
 
-                <div className="navbar-end">
+                <div className="navbar-end hidden sm:flex">
                     <Link href="/login" className="btn bg-gradient-to-r from-[#059669] to-[#047857] text-white font-bold hover:shadow-2xl hover:zoom-90">
                         Login <FaArrowRight />
                     </Link>
