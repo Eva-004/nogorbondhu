@@ -15,7 +15,7 @@ export default function Hero() {
             <span>Make Your Community Better</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-[#11382B] tracking-tight leading-[1.15]">
+          <h1 className="text-2xl sm:text-3xl lg:text-[52px] font-extrabold text-[#11382B] tracking-tight leading-[1.15]">
             Report Problems. <br className="hidden sm:inline" />
             Improve Your Community.
           </h1>
@@ -25,13 +25,13 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-2 w-full sm:w-auto">
-            <button className="flex items-center justify-center gap-2 bg-[#0F6848] hover:bg-[#0b5037] text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 shadow-sm w-full sm:w-auto">
+            <button className="flex items-center justify-center gap-2 bg-[#0F6848] hover:bg-[#0b5037] text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 shadow-sm w-full sm:w-auto cursor-pointer">
               <FaEdit className="w-4 h-4" />
-              <span>Report an Issue</span>
+              <span>Report a Problem</span>
             </button>
 
-            <button className="flex items-center justify-center gap-2 border border-[#9BD3B6] hover:bg-[#d5eedf] text-[#0F6848] px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 w-full sm:w-auto">
-              <span>Explore Issues</span>
+            <button className="flex items-center justify-center gap-2 border border-[#9BD3B6] hover:bg-[#d5eedf] text-[#0F6848] px-6 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 w-full sm:w-auto cursor-pointer">
+              <span>Explore Problems</span>
               <FiArrowRight className="w-4 h-4" />
             </button>
           </div>
