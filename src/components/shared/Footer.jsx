@@ -135,7 +135,7 @@ export default function Footer() {
                 </div>
 
                 <div className="pt-4 border-t border-emerald-900/40 flex flex-col sm:flex-row items-center justify-center text-[11px] text-[#81b29a] gap-2">
-                    <p>© 2024 NogorBondhu. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} NogorBondhu. All rights reserved.</p>
                     <div className="flex items-center gap-4">
                         <Link href="/privacy" className="underline hover:text-white transition-colors">
                             Privacy Policy
