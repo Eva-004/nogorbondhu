@@ -4,8 +4,22 @@ import { Button, Dropdown, Label } from "@heroui/react";
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
+import NavLink from './NavLink';
+import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
+import ProfileDropdown from './ProfileDropdown';
+import { toast } from 'react-toastify';
 
 const Navbar = () => {
+     const router = useRouter();
+    const userData = authClient.useSession();
+    const user = userData?.data?.user;
+    console.log(user);
+    const handleLogOut = async () => {
+        await authClient.signOut();
+        toast.success('Logout successfully!')
+        router.push('/login')
+    }
     return (
         <div className='bg-[#F0FDF4]  shadow-sm'>
             <div className="navbar w-11/12 mx-auto">
@@ -37,21 +51,21 @@ const Navbar = () => {
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                         >
                             <li>
-                                <Link href="/">Home</Link>
+                                <NavLink href="/">Home</NavLink>
                             </li>
 
                             <li >
                                 <Link href="">Reports</Link>
                                 <ul className="p-2">
                                     <li>
-                                        <Link href="/add-report">
+                                        <NavLink href="/add-report">
                                             Report a Problem
-                                        </Link>
+                                        </NavLink>
                                     </li>
                                     <li>
-                                        <Link href="/reports">
+                                        <NavLink href="/reports">
                                             Reports
-                                        </Link>
+                                        </NavLink>
                                     </li>
                                 </ul>
                             </li>
@@ -60,20 +74,20 @@ const Navbar = () => {
                                 <Link href="">Public Services</Link>
                                 <ul className="p-2">
                                     <li>
-                                        <Link href="/services">
+                                        <NavLink href="/services">
                                             Services
-                                        </Link>
+                                        </NavLink>
                                     </li>
                                     <li>
-                                        <Link href="/announcements">
+                                        <NavLink href="/announcements">
                                             Announcements
-                                        </Link>
+                                        </NavLink>
                                     </li>
                                 </ul>
                             </li>
 
                             <li>
-                                <Link href="/about">About</Link>
+                                <NavLink href="/about">About</NavLink>
                             </li>
                             <li className="mt-2 pt-2 border-t border-base-200 sm:hidden">
                                 <Link
@@ -95,7 +109,7 @@ const Navbar = () => {
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1 text-[ #475569]">
                         <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
-                            <Link href="/">Home</Link>
+                            <NavLink href="/">Home</NavLink>
                         </li>
 
                         <li>
@@ -106,14 +120,14 @@ const Navbar = () => {
                                 <Dropdown.Popover>
                                     <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
                                         <Dropdown.Item id="new-file" textValue="New file">
-                                            <Label><Link href="/add-report">
+                                            <Label><NavLink href="/add-report">
                                                 Report a Problem
-                                            </Link></Label>
+                                            </NavLink></Label>
                                         </Dropdown.Item>
                                         <Dropdown.Item id="copy-link" textValue="Copy link">
-                                            <Label><Link href="/reports">
+                                            <Label><NavLink href="/reports">
                                                 Reports
-                                            </Link></Label>
+                                            </NavLink></Label>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown.Popover>
@@ -128,14 +142,14 @@ const Navbar = () => {
                                 <Dropdown.Popover>
                                     <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
                                         <Dropdown.Item id="new-file" textValue="New file">
-                                            <Label><Link href="/services">
+                                            <Label><NavLink href="/services">
                                                 Services
-                                            </Link></Label>
+                                            </NavLink></Label>
                                         </Dropdown.Item>
                                         <Dropdown.Item id="copy-link" textValue="Copy link">
-                                            <Label><Link href="/announcements">
+                                            <Label><NavLink href="/announcements">
                                                 Announcements
-                                            </Link></Label>
+                                            </NavLink></Label>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown.Popover>
@@ -143,16 +157,26 @@ const Navbar = () => {
                         </li>
 
                         <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
-                            <Link href="/about">About</Link>
+                            <NavLink href="/about">About</NavLink>
                         </li>
                     </ul>
                 </div>
 
-                <div className="navbar-end hidden sm:flex">
+                { !user &&
+                 <div className="navbar-end hidden sm:flex">
                     <Link href="/login" className="btn bg-gradient-to-r from-[#059669] to-[#047857] text-white font-bold hover:shadow-2xl hover:zoom-90">
                         Login <FaArrowRight />
                     </Link>
                 </div>
+                }
+                { user &&
+                  <div className=" flex gap-3">
+
+                            <ProfileDropdown handleLogOut={handleLogOut} image={user?.image} name={user?.name} email={user?.email} role={user?.role}></ProfileDropdown>
+
+
+                        </div>
+                }
             </div>
         </div>
     );
