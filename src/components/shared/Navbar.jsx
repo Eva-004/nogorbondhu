@@ -5,7 +5,7 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import { FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 import NavLink from './NavLink';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import ProfileDropdown from './ProfileDropdown';
 import { toast } from 'react-toastify';
@@ -15,6 +15,10 @@ const Navbar = () => {
     const userData = authClient.useSession();
     const user = userData?.data?.user;
     console.log(user);
+    const pathName = usePathname();
+    if (pathName.includes("dashboard")) {
+        return null;
+    }
     const handleLogOut = async () => {
         await authClient.signOut();
         toast.success('Logout successfully!')
@@ -99,9 +103,9 @@ const Navbar = () => {
                             </li>
                         </ul>
                     </div>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex sm:gap-2 items-center">
                         <Image src={'/images/logo.jpeg'} alt="logo" width={40} height={40} className="object-cover" />
-                        <Link href={'/'} className="btn btn-ghost text-xl text-[#047857] font-semibold">NogorBondhu</Link>
+                        <Link href={'/'} className="btn btn-ghost text-[16px] sm:text-xl text-[#047857] font-semibold">NogorBondhu</Link>
                     </div>
 
                 </div>
@@ -170,7 +174,7 @@ const Navbar = () => {
                 </div>
                 }
                 { user &&
-                  <div className=" flex gap-3">
+                  <div className="navbar-end  flex gap-3">
 
                             <ProfileDropdown handleLogOut={handleLogOut} image={user?.image} name={user?.name} email={user?.email} role={user?.role}></ProfileDropdown>
 

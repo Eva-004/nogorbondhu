@@ -6,6 +6,19 @@ import React from 'react';
 const NavLink = ({ href, children }) => {
     const pathName = usePathname();
     const isActive = href === pathName;
+    if (pathName.includes("dashboard")) {
+        return (
+        <Link
+            href={href}
+            className={`${isActive
+                    ? "flex items-center border-b-2 border-white text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
+                    : "flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
+                }`}
+        >
+            {children}
+        </Link>
+    );
+    }
     return (
         <Link
             href={href}

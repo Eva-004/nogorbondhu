@@ -25,7 +25,7 @@ const LoginPage = () => {
         const { error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/profile",
+            callbackURL: "/",
         })
         if (error) {
             toast.error(error.message || "Login failed");
@@ -37,7 +37,7 @@ const LoginPage = () => {
     const handleGoogleLogin = async () => {
         const { error } = await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/profile",
+            callbackURL: "/",
         });
 
         if (error) {
