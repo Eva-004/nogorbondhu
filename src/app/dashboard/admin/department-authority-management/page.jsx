@@ -11,38 +11,44 @@ import {
 
 const DepartmentAndAuthorityManagementPage = () => {
  const [departments,setDepartment]=useState([]);
-  useEffect(()=>{
-     const fetchData = async()=>{
-       const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/departments`,{
-         headers: {
-                    "Content-Type": "application/json",
-                },
-       });
-         const data = await res.json();
-         setDepartment(data);
-     }
-     fetchData();
-    
-  },[]);
+ const [authorities, setAuthorities] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+        const [departmentsRes, authoritiesRes] = await Promise.all([
+            fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/departments`),
+            fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/authorities`)
+        ]);
+
+        const [departments, authorities] = await Promise.all([
+            departmentsRes.json(),
+            authoritiesRes.json()
+        ]);
+
+        setDepartment(departments);
+        setAuthorities(authorities);
+    };
+
+    fetchData();
+}, []);
   console.log(departments);
   const cards = [
     {
       title: "Total Departments",
       count: departments.length,
       icon: HiOutlineBuildingOffice2,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+     color: "text-[#0F6848]",
+      bg: "bg-[#EBF7F0]",
     },
     {
       title: "Total Authorities",
-      count: "0",
+      count: authorities.length,
       icon: HiOutlineShieldCheck,
       color: "text-[#0F6848]",
       bg: "bg-[#EBF7F0]",
     },
     {
       title: "Active Authorities",
-      count: "0",
+      count: authorities.length,
       icon: HiOutlineCheckCircle,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
@@ -90,11 +96,11 @@ const DepartmentAndAuthorityManagementPage = () => {
           );
         })}
       </div>
-      <ActionsAndTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <ActionsAndTabs departments={departments} activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === "departments" ? (
         <DepartmentsTable departments={departments} />
       ) : (
-        <AuthoritiesTable />
+        <AuthoritiesTable authorities={authorities} />
       )}
     </div>
   );

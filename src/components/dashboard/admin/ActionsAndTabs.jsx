@@ -3,7 +3,8 @@ import AddAuthorityModal from "@/components/Modals/AddAuthorityModal";
 import AddDepartmentModal from "@/components/Modals/AddDepartmentModal";
 import { HiPlus } from "react-icons/hi2";
 
-export default function ActionsAndTabs({ activeTab, setActiveTab }) {
+export default function ActionsAndTabs({departments ,activeTab, setActiveTab }) {
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-gray-200 pb-4">
       <div className="flex gap-2">
@@ -29,7 +30,7 @@ export default function ActionsAndTabs({ activeTab, setActiveTab }) {
 
       <div className="flex items-center gap-3">
         <AddDepartmentModal/>
-        <AddAuthorityModal/>
+        <AddAuthorityModal departments={departments}/>
       </div>
     </div>
   );

@@ -1,14 +1,133 @@
 "use client";
 
 import { Modal, Button, TextField, Label, Input, Surface } from "@heroui/react";
+import { useEffect, useState } from "react";
 import { HiOutlineShieldCheck, HiPlus } from "react-icons/hi2";
+import { toast } from "react-toastify";
 
-export default function AddAuthorityModal() {
+export default function AddAuthorityModal({ departments }) {
+    const [divisions, setDivisions] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [upazilas, setUpazilas] = useState([]);
+    const [unions, setUnions] = useState([]);
+    const [coverageLevel, setCoverageLevel] = useState("");
+
+    const [selectedDivision, setSelectedDivision] = useState("");
+    const [selectedDistrict, setSelectedDistrict] = useState("");
+    const [selectedUpazila, setSelectedUpazila] = useState("");
+
+    useEffect(() => {
+        const fetchDivisions = async () => {
+
+            const res = await fetch(
+                "https://bdapi.vercel.app/api/v.1/division"
+            );
+
+            const data = await res.json();
+
+            setDivisions(data.data);
+
+        };
+
+        fetchDivisions();
+    }, []);
+
+    const handleDivisionChange = async (e) => {
+        const divisionId = e.target.value;
+
+        setSelectedDivision(divisionId);
+        setSelectedDistrict("");
+        setSelectedUpazila("");
+
+        setDistricts([]);
+        setUpazilas([]);
+        setUnions([]);
+
+        const res = await fetch(`https://bdapi.vercel.app/api/v.1/district/${divisionId}`
+        );
+
+        const data = await res.json();
+        setDistricts(data.data);
+    };
+
+    const handleDistrictChange = async (e) => {
+        const districtId = e.target.value;
+
+        setSelectedDistrict(districtId);
+        setSelectedUpazila("");
+
+        setUpazilas([]);
+        setUnions([]);
+
+        const res = await fetch(
+            `https://bdapi.vercel.app/api/v.1/upazilla/${districtId}`
+        );
+
+        const data = await res.json();
+        setUpazilas(data.data);
+    };
+    const handleUpazilaChange = async (e) => {
+        const upazilaId = e.target.value;
+
+        setSelectedUpazila(upazilaId);
+        setUnions([]);
+
+        const res = await fetch(
+            `https://bdapi.vercel.app/api/v.1/union/${upazilaId}`
+        );
+
+        const data = await res.json();
+        setUnions(data.data);
+    };
+
+    const [isOpen, setIsOpen] = useState(false);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const authorities = Object.fromEntries(formData.entries());
+        const departmentName = departments.find(
+            (department) => department._id === authorities.department_id
+        );
+        const authorityData = {
+            authorityName: authorities.authorityName,
+            authorityType: authorities.authorityType,
+            departmentId: authorities.department_id,
+            departmentName: departmentName?.departmentName || "",
+            coverage: {
+                level: coverageLevel,
+                divisionId: authorities.divisionId || null,
+                districtId: authorities.districtId || null,
+                upazilaId: authorities.upazilaId || null,
+            },
+            status: authorities.status,
+        };
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/authorities`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(authorityData),
+            }
+        );
+        const data = await res.json();
+        if (!res.ok) {
+            toast.error(data.message);
+            return;
+        }
+        else {
+            toast.success("Added authority successfully!");
+            setIsOpen(false);
+        }
+    }
+
     return (
-        <Modal>
+        <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
             <Modal.Trigger>
                 <button className="flex items-center gap-1.5 px-4 py-2 bg-[#0F6848] text-white hover:bg-[#0b5037] rounded-lg text-sm font-semibold shadow-sm transition-all">
-                    <HiPlus className="w-4 h-4 text-white" /> Add Authority
+                    <HiPlus className="w-4 h-4 text-white" />
+                    Add Authority
                 </button>
             </Modal.Trigger>
 
@@ -33,14 +152,14 @@ export default function AddAuthorityModal() {
 
                         <Modal.Body className="p-6">
                             <Surface variant="default">
-                                <form className="flex flex-col gap-4">
+                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                                     <TextField
                                         className="w-full"
                                         name="authorityName"
                                         type="text"
                                     >
-                                        <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                            Authority Name <span className="text-red-500">*</span>
+                                        <Label isRequired className="text-xs font-semibold text-[#11382B] mb-1 block">
+                                            Authority Name
                                         </Label>
 
                                         <Input
@@ -53,19 +172,24 @@ export default function AddAuthorityModal() {
                                         className="w-full"
                                         name="authorityType"
                                     >
-                                        <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                            Authority Type <span className="text-red-500">*</span>
+                                        <Label isRequired className="text-xs font-semibold text-[#11382B] mb-1 block">
+                                            Authority Type
                                         </Label>
 
-                                        <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                            <option value="">Select Authority Type</option>
-                                            <option value="city_corporation">
+                                        <select
+                                            name="authorityType"
+                                            className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]"
+                                        >
+                                            <option value="">
+                                                Select Authority Type
+                                            </option>
+                                            <option value="City corporation">
                                                 City Corporation
                                             </option>
-                                            <option value="municipality">
-                                                Municipality
+                                            <option value="Upazila">
+                                                Upazila
                                             </option>
-                                            <option value="government_agency">
+                                            <option value="Government Agency">
                                                 Government Agency
                                             </option>
                                         </select>
@@ -73,115 +197,111 @@ export default function AddAuthorityModal() {
 
                                     <TextField
                                         className="w-full"
-                                        name="department"
+                                        name="department_id"
                                     >
-                                        <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                            Department <span className="text-red-500">*</span>
+                                        <Label isRequired className="text-xs font-semibold text-[#11382B] mb-1 block">
+                                            Department
+
                                         </Label>
 
-                                        <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                            <option value="">Select Department</option>
-                                            <option value="local_government">
-                                                Local Government
+                                        <select
+                                            className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]"
+                                            name="department_id"
+                                        >
+                                            <option value="">
+                                                Select Department
                                             </option>
-                                            <option value="transport">
-                                                Transport
-                                            </option>
-                                            <option value="water_sanitation">
-                                                Water & Sanitation
-                                            </option>
+
+                                            {departments.map((department) => (
+                                                <option
+                                                    key={department._id}
+                                                    value={department._id}
+                                                >
+                                                    {department.departmentName}
+                                                </option>
+                                            ))}
                                         </select>
                                     </TextField>
 
-                                    <div className="pt-1">
-                                        <p className="text-xs font-bold text-[#11382B] mb-3">
-                                            Area Coverage
-                                        </p>
-
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <TextField
-                                                className="w-full"
-                                                name="division"
+                                    <div className="space-y-4">
+                                        <div>
+                                            <Label isRequired>Division</Label>
+                                            <select
+                                                name="divisionId"
+                                                value={selectedDivision}
+                                                onChange={handleDivisionChange}
+                                                className="w-full rounded-lg border px-3 py-2.5"
+                                                required
                                             >
-                                                <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                                    Division <span className="text-red-500">*</span>
-                                                </Label>
+                                                <option value="">Select Division</option>
 
-                                                <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                                    <option value="">Select Division</option>
-                                                    <option value="sylhet">Sylhet</option>
-                                                    <option value="dhaka">Dhaka</option>
-                                                    <option value="chattogram">Chattogram</option>
-                                                </select>
-                                            </TextField>
-
-                                            <TextField
-                                                className="w-full"
-                                                name="district"
-                                            >
-                                                <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                                    District <span className="text-red-500">*</span>
-                                                </Label>
-
-                                                <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                                    <option value="">Select District</option>
-                                                    <option value="sylhet">Sylhet</option>
-                                                    <option value="dhaka">Dhaka</option>
-                                                    <option value="chattogram">Chattogram</option>
-                                                </select>
-                                            </TextField>
+                                                {divisions.map((division) => (
+                                                    <option key={division.id} value={division.id}>
+                                                        {division.name}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-3 mt-3">
-                                            <TextField
-                                                className="w-full"
+                                        <div>
+                                            <Label isRequired>Coverage Level</Label>
+                                            <select
                                                 name="coverageLevel"
+                                                value={coverageLevel}
+                                                onChange={(e) => setCoverageLevel(e.target.value)}
+                                                className="w-full rounded-lg border px-3 py-2.5"
+                                                required
                                             >
-                                                <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                                    Coverage Level{" "}
-                                                    <span className="text-red-500">*</span>
-                                                </Label>
-
-                                                <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                                    <option value="">Select Level</option>
-                                                    <option value="district">District</option>
-                                                    <option value="city_corporation">
-                                                        City Corporation
-                                                    </option>
-                                                    <option value="municipality">
-                                                        Municipality
-                                                    </option>
-                                                </select>
-                                            </TextField>
-
-                                            <TextField
-                                                className="w-full"
-                                                name="localArea"
-                                            >
-                                                <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                                    City / Upazila / Area
-                                                </Label>
-
-                                                <Input
-                                                    placeholder="e.g. Sylhet City"
-                                                    className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#0F6848] focus:ring-1 focus:ring-[#0F6848]"
-                                                />
-                                            </TextField>
+                                                <option value="">Select Level</option>
+                                                <option value="division">Division</option>
+                                                <option value="district">District</option>
+                                                <option value="city-corporation">City Corporation</option>
+                                                <option value="upazila">Upazila</option>
+                                            </select>
                                         </div>
 
-                                        <TextField
-                                            className="w-full mt-3"
-                                            name="wards"
-                                        >
-                                            <Label className="text-xs font-semibold text-[#11382B] mb-1 block">
-                                                Wards / Specific Areas
-                                            </Label>
+                                        {(coverageLevel === "district" ||
+                                            coverageLevel === "upazila") && (
+                                                <div>
+                                                    <Label isRequired>District</Label>
+                                                    <select
+                                                        name="districtId"
+                                                        value={selectedDistrict}
+                                                        onChange={handleDistrictChange}
+                                                        className="w-full rounded-lg border px-3 py-2.5"
+                                                        required
+                                                    >
+                                                        <option value="">Select District</option>
 
-                                            <Input
-                                                placeholder="e.g. Ward 1 - Ward 42"
-                                                className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#0F6848] focus:ring-1 focus:ring-[#0F6848]"
-                                            />
-                                        </TextField>
+                                                        {districts.map((district) => (
+                                                            <option key={district.id} value={district.id}>
+                                                                {district.name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+
+                                        {coverageLevel === "upazila" && (
+                                            <div>
+                                                <Label isRequired>Upazila</Label>
+                                                <select
+                                                    name="upazilaId"
+                                                    value={selectedUpazila}
+                                                    onChange={handleUpazilaChange}
+                                                    className="w-full rounded-lg border px-3 py-2.5"
+                                                    required
+                                                >
+                                                    <option value="">Select Upazila</option>
+
+                                                    {upazilas.map((upazila) => (
+                                                        <option key={upazila.id} value={upazila.id}>
+                                                            {upazila.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <TextField
@@ -192,9 +312,16 @@ export default function AddAuthorityModal() {
                                             Status
                                         </Label>
 
-                                        <select className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]">
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
+                                        <select
+                                            name="status"
+                                            className="w-full px-3.5 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:border-[#0F6848]"
+                                        >
+                                            <option value="active">
+                                                Active
+                                            </option>
+                                            <option value="inactive">
+                                                Inactive
+                                            </option>
                                         </select>
                                     </TextField>
 
@@ -206,7 +333,7 @@ export default function AddAuthorityModal() {
                                             Cancel
                                         </Button>
 
-                                        <Button
+                                        <Button type="submit"
                                             className="px-5 py-2 text-sm font-semibold text-white bg-[#0F6848] hover:bg-[#0b5037] rounded-lg shadow-sm transition-all"
                                         >
                                             Save
