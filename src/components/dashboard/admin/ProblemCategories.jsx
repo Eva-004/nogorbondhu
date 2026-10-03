@@ -7,18 +7,15 @@ import CategoryModal from "./CategoryModal";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-export default function ProblemCategories() {
-  const [categories, setCategories] = useState([]);
+export default function ProblemCategories({categories}) {
+
   const [departments, setDepartments] = useState([]);
+  const [authorities, setAuthorities] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [departmentId, setDepartmentId] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-
+  
   const fetchDepartments = async () => {
     try {
       const res = await fetch(`${SERVER_URL}/departments`);
@@ -29,11 +26,22 @@ export default function ProblemCategories() {
       console.error(error);
     }
   };
+  const fetchAuthorities = async () => {
+    try {
+      const res = await fetch(`${SERVER_URL}/authorities`);
+      const data = await res.json();
+
+      setAuthorities(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     fetchDepartments();
+    fetchAuthorities();
+    setLoading(false);
   }, []);
-
 
   return (
     <>
@@ -48,15 +56,9 @@ export default function ProblemCategories() {
               Manage the problems citizens can report through NogorBondhu.
             </p>
           </div>
-
-          <Button
-            size="sm"
-            className="bg-[#11382B] text-white"
-            onPress={() => setIsOpen(true)}
-          >
-            <Plus size={16} />
-            Add Category
-          </Button>
+          
+          <CategoryModal isOpen={isOpen} setIsOpen={setIsOpen} departments={departments} authorities={authorities}/>
+         
         </div>
 
         <Table>
@@ -68,7 +70,7 @@ export default function ProblemCategories() {
               <Table.Header>
                 <Table.Column isRowHeader>Category</Table.Column>
                 <Table.Column>Department</Table.Column>
-                <Table.Column>Description</Table.Column>
+                <Table.Column>Authority</Table.Column>
                 <Table.Column>Issues</Table.Column>
                 <Table.Column>Status</Table.Column>
                 <Table.Column>Actions</Table.Column>
@@ -79,21 +81,21 @@ export default function ProblemCategories() {
                 items={categories}
                 emptyContent="No problem categories found"
               >
-                {(category) => (
+                 {(category) => (
                   <Table.Row key={category._id}>
                     <Table.Cell>
                       <span className="font-medium text-[#11382B]">
-                        {category.name}
+                        {category.categoryName}
                       </span>
                     </Table.Cell>
 
                     <Table.Cell>
-                      {category.department?.name || "-"}
+                      {category.departmentName || "-"}
                     </Table.Cell>
 
                     <Table.Cell>
                       <span className="text-gray-600">
-                        {category.description || "-"}
+                        {category.authorityName || "-"}
                       </span>
                     </Table.Cell>
 
@@ -104,12 +106,14 @@ export default function ProblemCategories() {
                     <Table.Cell>
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                          category.isActive
+                          category.status === "active"
                             ? "bg-green-50 text-green-700"
                             : "bg-gray-100 text-gray-600"
                         }`}
                       >
-                        {category.isActive ? "Active" : "Inactive"}
+                        {category.status === "active"
+                          ? "Active"
+                          : "Inactive"}
                       </span>
                     </Table.Cell>
 
@@ -142,19 +146,6 @@ export default function ProblemCategories() {
         </Table>
       </div>
 
-      <CategoryModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        departments={departments}
-        name={name}
-        setName={setName}
-        description={description}
-        setDescription={setDescription}
-        departmentId={departmentId}
-        setDepartmentId={setDepartmentId}
-        submitting={submitting}
-        onSubmit={handleCreateCategory}
-      />
     </>
   );
 }

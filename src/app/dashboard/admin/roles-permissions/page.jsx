@@ -4,6 +4,7 @@ import React from "react";
 import { Table, Button, Chip } from "@heroui/react";
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa";
+import AddRoleModal from "@/components/dashboard/admin/AddRoleModal";
 
 const RoleAndPermission = () => {
   const roles =[];
@@ -31,14 +32,7 @@ const RoleAndPermission = () => {
           </p>
         </div>
 
-        <Button
-          onPress={handleAddRole}
-          startContent={<FiPlus size={18} />}
-          className="bg-[#0F6848] text-white font-semibold hover:bg-[#0b5037] shadow-sm"
-        >
-         <FaPlus/>
-          Add New Role
-        </Button>
+        <AddRoleModal/>
       </div>
 
       <div className="rounded-xl border border-[#D5EADF] bg-white p-4 shadow-sm sm:p-6">

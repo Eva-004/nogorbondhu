@@ -11,7 +11,7 @@ const NavLink = ({ href, children }) => {
         <Link
             href={href}
             className={`${isActive
-                    ? "flex items-center border-b-2 border-white text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
+                    ? "flex items-center bg-white text-[#0F6848] font-bold gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200"
                     : "flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
                 }`}
         >

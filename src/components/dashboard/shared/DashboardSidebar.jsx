@@ -41,16 +41,9 @@ export default function DashboardSidebar({ role }) {
 
   return (
     <>
-      <div className="hidden md:flex bg-[#047857] w-60 border-r border-emerald-800/40 min-h-screen">
+      <div className="hidden md:flex bg-[#0F6848] w-60 border-r border-emerald-800/40 min-h-screen">
         <div className="w-full p-3">
           <div className="flex items-center gap-3 mb-6 px-1">
-            <Image
-              src="/images/logo.jpeg"
-              width={30}
-              height={30}
-              alt="logo"
-              className="rounded-full ring-2"
-            />
 
             <h1 className="text-2xl font-bold text-white">
               NogorBondhu

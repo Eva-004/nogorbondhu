@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Clock3, CheckCircle2, Tags } from "lucide-react";
 
 import AllReports from "@/components/dashboard/admin/AllReports";
@@ -8,6 +8,20 @@ import ProblemCategories from "@/components/dashboard/admin/ProblemCategories";
 
 export default function IssueReportManagement() {
   const [activeTab, setActiveTab] = useState("reports");
+  const [categories, setCategories] = useState([]);
+
+   const fetchCategories = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problemCategories`);
+      const data = await res.json();
+      setCategories(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+      fetchCategories();
+    }, []);
 
   const cards = [
     {
@@ -33,7 +47,7 @@ export default function IssueReportManagement() {
     },
     {
       title: "Problem Categories",
-      count: 0,
+      count: categories.length || 0,
       icon: Tags,
       bg: "bg-purple-50",
       color: "text-purple-600",
@@ -105,7 +119,7 @@ export default function IssueReportManagement() {
         </div>
       </div>
 
-      {activeTab === "reports" ? <AllReports /> : <ProblemCategories />}
+      {activeTab === "reports" ? <AllReports /> : <ProblemCategories categories={categories}/>}
     </div>
   );
 }
