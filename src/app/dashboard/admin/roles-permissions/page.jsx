@@ -1,15 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Chip } from "@heroui/react";
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa";
 import AddRoleModal from "@/components/dashboard/admin/AddRoleModal";
 
 const RoleAndPermission = () => {
-  const roles =[];
+  const [roles, setRoles] = useState([]);
+  const fetchRoles = async () => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/roles`);
+    const data = await res.json();
+    setRoles(data);
+    console.log(data);
+  }
 
-  const handleAddRole = () => {};
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const filteredRoles = roles.filter(role => role.slug != "admin");
 
   const handleEdit = (role) => {
     console.log("Edit:", role);
@@ -32,7 +42,7 @@ const RoleAndPermission = () => {
           </p>
         </div>
 
-        <AddRoleModal/>
+        <AddRoleModal />
       </div>
 
       <div className="rounded-xl border border-[#D5EADF] bg-white p-4 shadow-sm sm:p-6">
@@ -59,7 +69,7 @@ const RoleAndPermission = () => {
               </Table.Header>
 
               <Table.Body>
-                {roles.map((role) => (
+                {filteredRoles.map((role) => (
                   <Table.Row key={role._id}>
                     <Table.Cell>
                       <div className="flex items-center gap-3">
@@ -74,12 +84,12 @@ const RoleAndPermission = () => {
                       <div className="flex max-w-[500px] flex-wrap gap-1.5">
                         {role.permissions.slice(0, 3).map((permission) => (
                           <Chip
-                            key={permission}
+                            key={permission.href}
                             size="sm"
                             variant="flat"
                             className="bg-[#DDF2E4] text-[#0F6848]"
                           >
-                            {permission}
+                            {permission.label}
                           </Chip>
                         ))}
 

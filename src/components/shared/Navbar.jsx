@@ -11,7 +11,7 @@ import ProfileDropdown from './ProfileDropdown';
 import { toast } from 'react-toastify';
 
 const Navbar = () => {
-     const router = useRouter();
+    const router = useRouter();
     const userData = authClient.useSession();
     const user = userData?.data?.user;
     console.log(user);
@@ -122,67 +122,75 @@ const Navbar = () => {
                                     <span>Reports</span><RiArrowDropDownLine size={24} />
                                 </Dropdown.Trigger>
                                 <Dropdown.Popover>
-                                    <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
-                                        <Dropdown.Item id="new-file" textValue="New file">
-                                            <Label><NavLink href="/add-report">
-                                                Report a Problem
-                                            </NavLink></Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="copy-link" textValue="Copy link">
-                                            <Label><NavLink href="/reports">
-                                                Reports
-                                            </NavLink></Label>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown.Popover>
-                            </Dropdown>
-                        </li>
+                                    <Dropdown.Menu onAction={(key) => {
+                                        if (key === "report-problem") {
+                                            router.push("/report-problem");
+                                        }
 
-                        <li>
-                            <Dropdown>
-                                <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white hover:font-bold'>
-                                    <span>Public Services</span><RiArrowDropDownLine size={24} />
-                                </Dropdown.Trigger>
-                                <Dropdown.Popover>
-                                    <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
-                                        <Dropdown.Item id="new-file" textValue="New file">
-                                            <Label><NavLink href="/services">
-                                                Services
-                                            </NavLink></Label>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item id="copy-link" textValue="Copy link">
-                                            <Label><NavLink href="/announcements">
-                                                Announcements
-                                            </NavLink></Label>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown.Popover>
-                            </Dropdown>
-                        </li>
+                                        if (key === "reports") {
+                                            router.push("/reports");
+                                        }
+                                    }}>
+                                    <Dropdown.Item id="report-problem">
+                                        <Label><NavLink href="/report-problem">
+                                            Report a Public Problem
+                                        </NavLink></Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="reports">
+                                        <Label><NavLink href="/reports">
+                                            Reports
+                                        </NavLink></Label>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Popover>
+                        </Dropdown>
+                    </li>
 
-                        <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
-                            <NavLink href="/about">About</NavLink>
-                        </li>
-                    </ul>
-                </div>
+                    <li>
+                        <Dropdown>
+                            <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white hover:font-bold'>
+                                <span>Public Services</span><RiArrowDropDownLine size={24} />
+                            </Dropdown.Trigger>
+                            <Dropdown.Popover>
+                                <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
+                                    <Dropdown.Item id="new-file" textValue="New file">
+                                        <Label><NavLink href="/services">
+                                            Services
+                                        </NavLink></Label>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item id="copy-link" textValue="Copy link">
+                                        <Label><NavLink href="/announcements">
+                                            Announcements
+                                        </NavLink></Label>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown.Popover>
+                        </Dropdown>
+                    </li>
 
-                { !user &&
-                 <div className="navbar-end hidden sm:flex">
+                    <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
+                        <NavLink href="/about">About</NavLink>
+                    </li>
+                </ul>
+            </div>
+
+            {!user &&
+                <div className="navbar-end hidden sm:flex">
                     <Link href="/login" className="btn bg-gradient-to-r from-[#059669] to-[#047857] text-white font-bold hover:shadow-2xl hover:zoom-90">
                         Login <FaArrowRight />
                     </Link>
                 </div>
-                }
-                { user &&
-                  <div className="navbar-end  flex gap-3">
+            }
+            {user &&
+                <div className="navbar-end  flex gap-3">
 
-                            <ProfileDropdown handleLogOut={handleLogOut} image={user?.image} name={user?.name} email={user?.email} role={user?.role}></ProfileDropdown>
+                    <ProfileDropdown handleLogOut={handleLogOut} image={user?.image} name={user?.name} email={user?.email} role={user?.role}></ProfileDropdown>
 
 
-                        </div>
-                }
-            </div>
+                </div>
+            }
         </div>
+        </div >
     );
 };
 
