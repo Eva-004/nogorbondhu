@@ -5,7 +5,7 @@ import { FiArrowRight } from "react-icons/fi";
 
 export default function Hero() {
   return (
-    <section className="bg-[#EBF7F0] w-full min-h-[550px] px-4 sm:px-6 py-8 sm:py-12 lg:px-16 flex items-center justify-center">
+    <section className="bg-[#EBF7F0] w-full min-h-[550px] px-4 sm:px-6 py-8 sm:py-6 lg:px-16 flex items-center justify-center">
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
         <div className="lg:col-span-6 flex flex-col items-start space-y-5 sm:space-y-6">

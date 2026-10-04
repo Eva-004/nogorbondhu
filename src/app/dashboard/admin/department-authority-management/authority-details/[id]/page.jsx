@@ -9,20 +9,13 @@ import {
     HiOutlineUserPlus,
 } from "react-icons/hi2";
 import AuthorityCoverageArea from "@/components/dashboard/admin/AuthorityCoverageArea";
-import AuthorityInvitation from "@/components/dashboard/admin/AuthorityInvitation";
 
-async function getInvitations() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/authority-invitations`);
-    return res.json();
-}
 
 const AuthorityDetailsPage = async ({ params }) => {
     const { id } = await params;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/authorities/${id}`);
     const authority = await res.json();
     console.log(authority);
-    const invitations = await getInvitations();
-    const authorityHead = invitations.find((it) => it.authorityId === authority._id);
     return (
         <div className="space-y-6 p-6">
 
@@ -113,7 +106,7 @@ const AuthorityDetailsPage = async ({ params }) => {
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
+                {/* <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
 
                     {authorityHead?.status === "pending" ? (
                         <>
@@ -165,7 +158,7 @@ const AuthorityDetailsPage = async ({ params }) => {
                         </>
                     )}
 
-                </div>
+                </div> */}
             </div>
 
         </div>

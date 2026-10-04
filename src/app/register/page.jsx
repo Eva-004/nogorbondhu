@@ -43,7 +43,7 @@ const RegisterPage = () => {
   const handleGoogleLogin = async () => {
     const { error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard/profile",
+      callbackURL: "/",
     });
 
     if (error) {
