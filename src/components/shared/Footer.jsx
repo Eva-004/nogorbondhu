@@ -129,7 +129,7 @@ export default function Footer() {
                         <div className="space-y-1.5 text-xs text-[#b8e2d0]">
                             <p className="flex items-center gap-2">
                                 <FaEnvelope className="text-emerald-400 text-xs" />
-                                <span>contact@nogorbondhu.gov.bd</span>
+                                <span>contact@nogorbondhu.com</span>
                             </p>
                             <p className="flex items-center gap-2">
                                 <FaPhone className="text-emerald-400 text-xs" />

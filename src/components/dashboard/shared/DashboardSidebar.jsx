@@ -4,23 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import NavLink from "@/components/shared/NavLink";
 
-export default function DashboardSidebar({ role }) {
+export default function DashboardSidebar({permissions}) {
   const [open, setOpen] = useState(false);
-  const [permissions, setPermissions] = useState([]);
-
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/roles/${role}`
-      );
-
-      const data = await res.json();
-
-      setPermissions(data.permissions || []);
-    };
-
-    fetchPermissions();
-  }, [role]);
 
   const NavList = (
     <>

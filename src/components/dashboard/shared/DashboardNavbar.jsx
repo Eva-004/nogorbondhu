@@ -4,71 +4,32 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Drawer } from "@heroui/react";
 import { Bars } from "@gravity-ui/icons";
-import { RxDashboard } from "react-icons/rx";
-import {
-  FaUsers,
-  FaBuilding,
-  FaBullhorn,
-  FaCog,
-  FaFileAlt,
-} from "react-icons/fa";
+
 import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import NavLink from "@/components/shared/NavLink";
 
-const DashboardNavbar = ({ user }) => {
+const DashboardNavbar = ({ user,permissions }) => {
   const role = user?.role ?? "user";
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const dashboardItems = {
-    admin: [
-      { icon: RxDashboard, label: "Overview", href: "/dashboard/admin" },
-      {
-        icon: FaFileAlt,
-        label: "Issue & Report Management",
-        href: "/dashboard/admin/issue-report-management",
-      },
-      {
-        icon: FaUsers,
-        label: "Citizen & User Management",
-        href: "/dashboard/admin/citizen-user-management",
-      },
-      {
-        icon: FaBuilding,
-        label: "Department & Authority Management",
-        href: "/dashboard/admin/department-authority-management",
-      },
-      {
-        icon: FaBullhorn,
-        label: "Public Announcements & Notices",
-        href: "/dashboard/admin/public-announcements-notices",
-      },
-      {
-        icon: FaCog,
-        label: "System Settings & Logs",
-        href: "/dashboard/admin/system-settings-logs",
-      },
-    ],
-  };
-
-  const navItems = dashboardItems[role] || dashboardItems.admin;
-
   const NavList = (
-    <nav className="flex flex-col gap-1">
-      {navItems.map((item) => (
-        <NavLink
-          key={item.label}
-          href={item.href}
-          onClick={() => setOpen(false)}
-          className="flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
-        >
-          <item.icon className="size-5 text-emerald-300" />
-          {item.label}
-        </NavLink>
-      ))}
-    </nav>
+       <>
+          <nav className="flex flex-col gap-1">
+            {permissions.map((item) => (
+              <NavLink
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </>
   );
 
   const handleLogOut = async () => {

@@ -57,12 +57,8 @@ const Navbar = () => {
                             <li>
                                 <NavLink href="/">Home</NavLink>
                             </li>
-
-                            <li >
-                                <Link href="">Reports</Link>
-                                <ul className="p-2">
                                     <li>
-                                        <NavLink href="/add-report">
+                                        <NavLink href="/report-problem">
                                             Report a Problem
                                         </NavLink>
                                     </li>
@@ -71,29 +67,22 @@ const Navbar = () => {
                                             Reports
                                         </NavLink>
                                     </li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <Link href="">Public Services</Link>
-                                <ul className="p-2">
+                                  
                                     <li>
                                         <NavLink href="/services">
-                                            Services
+                                            Public Services
                                         </NavLink>
                                     </li>
                                     <li>
                                         <NavLink href="/announcements">
-                                            Announcements
+                                            Public Announcements
                                         </NavLink>
                                     </li>
-                                </ul>
-                            </li>
-
                             <li>
                                 <NavLink href="/about">About</NavLink>
                             </li>
-                            <li className="mt-2 pt-2 border-t border-base-200 sm:hidden">
+                           {!user &&
+                             <li className="mt-2 pt-2 border-t border-base-200 sm:hidden">
                                 <Link
                                     href="/login"
                                     className="btn btn-sm bg-gradient-to-r from-[#059669] to-[#047857] text-white font-bold flex items-center justify-center gap-2 hover:shadow-lg"
@@ -101,8 +90,10 @@ const Navbar = () => {
                                     Login <FaArrowRight />
                                 </Link>
                             </li>
+                           }
                         </ul>
                     </div>
+
                     <div className="flex sm:gap-2 items-center">
                         <Image src={'/images/logo.jpeg'} alt="logo" width={40} height={40} className="object-cover" />
                         <Link href={'/'} className="btn btn-ghost text-[16px] sm:text-xl text-[#047857] font-semibold">NogorBondhu</Link>
@@ -110,7 +101,7 @@ const Navbar = () => {
 
                 </div>
 
-                <div className="navbar-center hidden lg:flex">
+                <div className="navbar-center hidden md:flex">
                     <ul className="menu menu-horizontal px-1 text-[ #475569]">
                         <li className='hover:bg-[#059669] hover:text-white hover:font-bold'>
                             <NavLink href="/">Home</NavLink>
