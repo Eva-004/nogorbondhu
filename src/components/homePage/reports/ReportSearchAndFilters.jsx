@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,13 +16,9 @@ import {
   useFilter,
 } from "@heroui/react";
 
-const ReportSearchAndFilters = () => {
-  const [search, setSearch] = useState("");
+const ReportSearchAndFilters = ({ filters, onFiltersChange }) => {
   const [upazilas, setUpazilas] = useState([]);
-  const [upazila, setUpazila] = useState("");
   const [loadingUpazilas, setLoadingUpazilas] = useState(false);
-  const [category, setCategory] = useState("");
-  const [priority, setPriority] = useState("");
   const [upazilaSearch, setUpazilaSearch] = useState("");
 
   const [categories, setCategories] = useState([]);
@@ -47,13 +42,31 @@ const ReportSearchAndFilters = () => {
       setLoadingUpazilas(false);
     };
 
+    const fetchCategories = async()=>{
+      setLoadingCategories(true);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problemCategories`);
+      const data = await res.json();
+      setCategories(data);
+      setLoadingCategories(false);
+    }
+
     fetchUpazilas();
+    fetchCategories();
   }, []);
 
-  const filteredUpazilas = upazilas.filter((item) => item.name?.toLowerCase().includes(upazilaSearch.trim().toLowerCase()));
+  const filteredUpazilas = upazilas.filter((item) =>
+    item.name?.toLowerCase().includes(upazilaSearch.trim().toLowerCase())
+  );
 
   const filterButtonClass =
     "h-12 w-full min-w-0 rounded-xl border border-[#D5EADF] bg-white px-3 text-sm text-[#244B3A] shadow-sm outline-none transition hover:border-[#0F6848] hover:bg-[#F7FBF8] focus:border-[#0F6848] focus:ring-2 focus:ring-[#0F6848]/10 disabled:cursor-not-allowed disabled:bg-gray-100";
+
+  const handleFilterChange = (name, value) => {
+    onFiltersChange((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
 
@@ -63,13 +76,14 @@ const ReportSearchAndFilters = () => {
 
         <input
           type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={filters.search}
+          onChange={(e) => handleFilterChange("search", e.target.value)}
           placeholder="Search by problem title or reporter name..."
           aria-label="Search by problem title or reporter name"
           className="h-12 w-full rounded-xl border border-[#D5EADF] bg-[#F7FBF8] py-2 pl-11 pr-4 text-sm text-[#244B3A] outline-none transition placeholder:text-[#8BA397] focus:border-[#0F6848] focus:ring-2 focus:ring-[#0F6848]/10"
         />
       </div>
+
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:w-[570px] lg:shrink-0">
         <div className="relative min-w-0">
 
@@ -77,8 +91,13 @@ const ReportSearchAndFilters = () => {
             <Autocomplete
               className="w-full"
               placeholder="All Upazilas"
-              value={upazila}
-              onChange={(key) => setUpazila(key == null ? "" : String(key))}
+              value={filters.upazila}
+              onChange={(key) =>
+                handleFilterChange(
+                  "upazila",
+                  key == null ? "" : String(key)
+                )
+              }
               isDisabled={loadingUpazilas}
             >
               <Label className="sr-only">Filter by upazila</Label>
@@ -131,14 +150,14 @@ const ReportSearchAndFilters = () => {
             </Autocomplete>
           </div>
 
-
-        
         </div>
 
         <div className="relative min-w-0">
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={filters.category}
+            onChange={(e) =>
+              handleFilterChange("category", e.target.value)
+            }
             aria-label="Filter by category"
             className={`${filterButtonClass} appearance-none pr-7`}
             disabled={loadingCategories}
@@ -166,8 +185,10 @@ const ReportSearchAndFilters = () => {
 
         <div className="relative min-w-0">
           <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            value={filters.priority}
+            onChange={(e) =>
+              handleFilterChange("priority", e.target.value)
+            }
             aria-label="Filter by priority"
             className={`${filterButtonClass} appearance-none pr-7`}
           >

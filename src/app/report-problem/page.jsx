@@ -103,7 +103,8 @@ const ReportProblemPage = () => {
                 evidence: formData.evidence
                     .filter((image) => image.url)
                     .map((image) => image.url),
-                userId: user?.id
+                userId: user?.id,
+                userName: user?.name
             };
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports`, {
