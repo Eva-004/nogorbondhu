@@ -59,12 +59,12 @@ const Navbar = () => {
                             </li>
                                     <li>
                                         <NavLink href="/report-problem">
-                                            Report a Problem
+                                            Report a Public Problem
                                         </NavLink>
                                     </li>
                                     <li>
                                         <NavLink href="/reports">
-                                            Reports
+                                          Reports
                                         </NavLink>
                                     </li>
                                   

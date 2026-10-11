@@ -3,10 +3,12 @@
 import Image from "next/image";
 import StatusModal from "./StatusModal";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 const ReviewSubmitStep = ({ data, onSubmit, submitting }) => {
     const [modalStatus, setModalStatus] = useState("");
+    const router = useRouter();
     const handleSubmitClick = async () => {
         const result = await onSubmit();
 
@@ -227,11 +229,12 @@ const ReviewSubmitStep = ({ data, onSubmit, submitting }) => {
                 }
                 buttonText={modalStatus === "success" ? "OK" : "Try Again"}
                 onClose={() => {
+                    setModalStatus("");
+
                     if (modalStatus === "success") {
-                        setModalStatus("");
+                        router.push("/");
                     } else {
-                        setModalStatus("");
-                        handleSubmitClick();
+                        router.push("/report-problem");
                     }
                 }}
             />
