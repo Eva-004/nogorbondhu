@@ -71,21 +71,71 @@ const LocationEvidenceStep = ({
     }, [formData.district.id]);
 
 
-    const handleEvidenceChange = (e) => {
-        const files = Array.from(e.target.files);
+    const uploadImage = async (file) => {
+        const body = new FormData();
+        body.append("image", file);
 
-        const newEvidence = files.map((file) => ({
-            file,
-            preview: URL.createObjectURL(file),
-        }));
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/upload-image`,
+            {
+                method: "POST",
+                body,
+            }
+        );
 
-        setFormData((prev) => ({
-            ...prev,
-            evidence: [...prev.evidence, ...newEvidence],
-        }));
+        const data = await res.json();
 
-        e.target.value = "";
+        if (!res.ok) {
+            throw new Error(data.message || "Upload failed");
+        }
+
+        return data.url;
     };
+
+
+   
+const handleEvidenceChange = async (e) => {
+    const files = Array.from(e.target.files);
+    e.target.value = "";
+
+    const newEvidence = files.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+        url: "",
+        uploading: true,
+    }));
+
+    setFormData((prev) => ({
+        ...prev,
+        evidence: [...prev.evidence, ...newEvidence],
+    }));
+
+    for (const file of files) {
+        try {
+            const url = await uploadImage(file);
+
+            setFormData((prev) => ({
+                ...prev,
+                evidence: prev.evidence.map((item) =>
+                    item.file === file
+                        ? { ...item, url, uploading: false }
+                        : item
+                ),
+            }));
+        } catch (error) {
+            console.error("Image upload failed:", error);
+
+            setFormData((prev) => ({
+                ...prev,
+                evidence: prev.evidence.map((item) =>
+                    item.file === file
+                        ? { ...item, uploading: false, uploadFailed: true }
+                        : item
+                ),
+            }));
+        }
+    }
+};
 
     const handleRemoveImage = (index) => {
         setFormData((prev) => {

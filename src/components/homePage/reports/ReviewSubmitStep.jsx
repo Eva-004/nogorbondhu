@@ -1,8 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import StatusModal from "./StatusModal";
+import { useState } from "react";
 
-const ReviewSubmitStep = ({ data }) => {
+
+const ReviewSubmitStep = ({ data, onSubmit, submitting }) => {
+    const [modalStatus, setModalStatus] = useState("");
+    const handleSubmitClick = async () => {
+        const result = await onSubmit();
+
+        setModalStatus(result?.success ? "success" : "error");
+    };
     return (
         <div>
             <div className="mb-8">
@@ -194,12 +203,38 @@ const ReviewSubmitStep = ({ data }) => {
                 <div className="flex justify-end pt-2">
                     <button
                         type="button"
-                        className="cursor-pointer rounded-lg bg-[#0F6848] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0B553B]"
+                        onClick={handleSubmitClick}
+                        disabled={submitting}
+                        className="rounded-lg bg-[#0F6848] px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                     >
-                        Submit Report
+                        {submitting ? "Submitting..." : "Submit Report"}
                     </button>
                 </div>
             </div>
+
+            <StatusModal
+                isOpen={modalStatus !== ""}
+                type={modalStatus}
+                title={
+                    modalStatus === "success"
+                        ? "Success"
+                        : "Submission Failed"
+                }
+                message={
+                    modalStatus === "success"
+                        ? "Your report has been submitted successfully. The appropriate authority will review it."
+                        : "Something went wrong while submitting your report. Please try again."
+                }
+                buttonText={modalStatus === "success" ? "OK" : "Try Again"}
+                onClose={() => {
+                    if (modalStatus === "success") {
+                        setModalStatus("");
+                    } else {
+                        setModalStatus("");
+                        handleSubmitClick();
+                    }
+                }}
+            />
         </div>
     );
 };

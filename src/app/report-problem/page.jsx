@@ -5,12 +5,17 @@ import { Button } from "@heroui/react";
 import ProblemStep from "@/components/homePage/reports/ProblemStep";
 import LocationEvidenceStep from "@/components/homePage/reports/LocationEvidenceStep";
 import ReviewSubmitStep from "@/components/homePage/reports/ReviewSubmitStep";
+import { authClient } from "@/lib/auth-client";
 
 const ReportProblemPage = () => {
     const [currentStep, setCurrentStep] = useState(1);
+    const [submitting, setSubmitting] = useState(false);
 
     const problemFormRef = useRef(null);
     const locationFormRef = useRef(null);
+
+    const userData = authClient.useSession();
+    const user = userData?.data?.user;
 
     const [formData, setFormData] = useState({
         title: "",
@@ -68,14 +73,14 @@ const ReportProblemPage = () => {
             ...prev,
             ...(currentStep === 1
                 ? {
-                      title: data.title,
-                      priority: data.priority,
-                      description: data.description,
-                  }
+                    title: data.title,
+                    priority: data.priority,
+                    description: data.description,
+                }
                 : {
-                      areaWard: data.areaWard,
-                      specificLocation: data.specificLocation,
-                  }),
+                    areaWard: data.areaWard,
+                    specificLocation: data.specificLocation,
+                }),
         }));
 
         if (currentStep < 3) {
@@ -86,6 +91,39 @@ const ReportProblemPage = () => {
     const handleBack = () => {
         if (currentStep > 1) {
             setCurrentStep((prev) => prev - 1);
+        }
+    };
+
+    const handleSubmit = async () => {
+        try {
+            setSubmitting(true);
+
+            const reportData = {
+                ...formData,
+                evidence: formData.evidence
+                    .filter((image) => image.url)
+                    .map((image) => image.url),
+                userId: user?.id
+            };
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(reportData),
+            });
+
+            if (!response.ok) {
+                throw new Error("Report submit failed");
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error("Report submission error:", error);
+            return { success: false };
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -111,21 +149,19 @@ const ReportProblemPage = () => {
                             >
                                 <div className="flex items-center">
                                     <div
-                                        className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${
-                                            currentStep >= step.id
-                                                ? "bg-[#0F6848] text-white"
-                                                : "border border-gray-300 bg-white text-gray-500"
-                                        }`}
+                                        className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold ${currentStep >= step.id
+                                            ? "bg-[#0F6848] text-white"
+                                            : "border border-gray-300 bg-white text-gray-500"
+                                            }`}
                                     >
                                         {step.id}
                                     </div>
 
                                     <span
-                                        className={`ml-3 hidden text-sm font-medium sm:block ${
-                                            currentStep >= step.id
-                                                ? "text-gray-900"
-                                                : "text-gray-500"
-                                        }`}
+                                        className={`ml-3 hidden text-sm font-medium sm:block ${currentStep >= step.id
+                                            ? "text-gray-900"
+                                            : "text-gray-500"
+                                            }`}
                                     >
                                         {step.title}
                                     </span>
@@ -133,11 +169,10 @@ const ReportProblemPage = () => {
 
                                 {index < steps.length - 1 && (
                                     <div
-                                        className={`mx-3 h-px flex-1 sm:mx-5 ${
-                                            currentStep > step.id
-                                                ? "bg-[#0F6848]"
-                                                : "bg-gray-200"
-                                        }`}
+                                        className={`mx-3 h-px flex-1 sm:mx-5 ${currentStep > step.id
+                                            ? "bg-[#0F6848]"
+                                            : "bg-gray-200"
+                                            }`}
                                     />
                                 )}
                             </div>
@@ -163,7 +198,7 @@ const ReportProblemPage = () => {
                     )}
 
                     {currentStep === 3 && (
-                        <ReviewSubmitStep data={formData} />
+                        <ReviewSubmitStep data={formData} onSubmit={handleSubmit} submitting={submitting} />
                     )}
 
                     <div className="mt-8 flex items-center justify-between border-t border-gray-100 pt-6">
