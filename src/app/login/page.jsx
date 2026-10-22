@@ -96,8 +96,10 @@ const LoginPage = () => {
                         name="password"
                         type="password"
                         validate={(value) => {
-                            if (!value) {
-                                return "Password is required";
+                            const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+
+                            if (!regex.test(value)) {
+                                return "Password must contain uppercase, lowercase, a number, and at least 8 characters";
                             }
                             return null;
                         }}

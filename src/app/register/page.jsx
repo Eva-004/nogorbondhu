@@ -36,7 +36,7 @@ const RegisterPage = () => {
       return;
     }
     toast.success("Register Successfully!");
-    router.push("/login")
+    router.push("/")
   };
 
 
@@ -127,8 +127,10 @@ const RegisterPage = () => {
             name="password"
             type="password"
             validate={(value) => {
-              if (value.length < 8) {
-                return "Password must be at least 8 characters";
+              const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+
+              if (!regex.test(value)) {
+                return "Password must contain uppercase, lowercase, a number, and at least 8 characters";
               }
               return null;
             }}

@@ -25,13 +25,9 @@ export const auth = betterAuth({
       role: {
         defaultValue: "user",
       },
-      authorityId: {
-        type: "string",
-        required: false,
-      },
-
     },
   },
+  
   plugins: [
     admin(),
   ],
