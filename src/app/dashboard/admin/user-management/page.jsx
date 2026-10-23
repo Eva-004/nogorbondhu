@@ -17,7 +17,7 @@ Table,
 import StatCard from "@/components/dashboard/admin/cards/StatCard";
 import { BsFillBuildingFill } from "react-icons/bs";
 import { useEffect, useState } from "react";
-import { getAllUsers } from "@/lib/fetchData";
+import { getAllUsers, getAuthority, getDepartment } from "@/lib/fetchData";
 import UserManageDrop from "@/components/dashboard/admin/modals/UserManageDrop";
 
 const UserManagePage = () => {
@@ -25,7 +25,19 @@ const [users,setUsers] = useState([]);
 
 const fetchUser = async()=>{
     const data = await getAllUsers();
-    setUsers(data);
+    const updatedUsers = await Promise.all(
+        data.map(async (user) => ({
+            ...user,
+            authorityName: await getAuthority(
+                user.authority?._id ?? user.authority
+            ),
+            departmentName: await getDepartment(
+                user.department?._id ?? user.department
+            ),
+        }))
+    );
+
+    setUsers(updatedUsers);
     console.log(data);
 }
 
@@ -164,10 +176,10 @@ return (
                                 {user.role ?? "—"}
                             </Table.Cell>
                             <Table.Cell>
-                                {user.authority ?? "—"}
+                                {user.authorityName ?? "—"}
                             </Table.Cell>
                             <Table.Cell>
-                                {user.department ?? "—"}
+                                {user.departmentName ?? "—"}
                             </Table.Cell>
                             <Table.Cell>
                                 {new Date(user.createdAt).toLocaleDateString("en-GB")}
@@ -175,7 +187,7 @@ return (
                             <Table.Cell>
                                 <div className="relative flex justify-center items-center gap-4">
                                         <span>{user.status ?? "—"}</span>
-                                   <UserManageDrop/>
+                                   <UserManageDrop user={user}/>
                                     </div>
                             </Table.Cell>
                         </Table.Row>

@@ -1,9 +1,13 @@
 "use client";
 import {Button, Dropdown, Label} from "@heroui/react";
 import { FiMoreVertical } from "react-icons/fi";
+import { EditUserModal } from "./EditUserModal";
+import { useState } from "react";
 
-const UserManageDrop = () => {
+const UserManageDrop = ({user}) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
     return (
+   <>
     <Dropdown>
        <Dropdown.Trigger>
         <span
@@ -13,7 +17,7 @@ const UserManageDrop = () => {
       </Dropdown.Trigger>
       <Dropdown.Popover>
         <Dropdown.Menu>
-          <Dropdown.Item id="edit-file" textValue="Edit file">
+          <Dropdown.Item id="edit-file" textValue="Edit file" onAction={() => setIsEditOpen(true)}>
             <Label>Edit User</Label>
           </Dropdown.Item>
           <Dropdown.Item className="text-red-600">
@@ -22,7 +26,9 @@ const UserManageDrop = () => {
         </Dropdown.Menu>
       </Dropdown.Popover>
     </Dropdown>
-    );
+    <EditUserModal user={user} isOpen={isEditOpen} onOpenChange={setIsEditOpen}></EditUserModal>
+  </>
+);
 };
 
 export default UserManageDrop;
