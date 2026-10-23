@@ -45,6 +45,9 @@ useEffect(()=>{
  fetchUser();
 },[]);
 
+const citizens = users.filter(cz => cz.role === "user");
+const authorities = users.filter(cz => cz.role === "authority");
+
 return (
 <div className="min-h-screen bg-[#EBF7F0] p-4 sm:p-6 lg:p-8">
     <div className="mx-auto max-w-[1600px] space-y-6">
@@ -70,28 +73,28 @@ return (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
                 title="Total Users"
-                value="—"
+                value={users.length}
                 icon={<FiUsers />}
                 iconStyle="bg-[#DDF2E4] text-[#0F6848]"
             />
 
             <StatCard
                 title="Citizens"
-                value="—"
+                value={citizens.length}
                 icon={<FiUser />}
                 iconStyle="bg-[#DDF2E4] text-[#0F6848]"
             />
 
             <StatCard
                 title="Authorities"
-                value="—"
+                value={authorities.length}
                 icon={<BsFillBuildingFill />}
                 iconStyle="bg-[#DDF2E4] text-[#0F6848]"
             />
 
             <StatCard
                 title="Administrators"
-                value="—"
+                value="0"
                 icon={<FiShield />}
                 iconStyle="bg-[#DDF2E4] text-[#0F6848]"
             />
