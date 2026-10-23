@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Chip } from "@heroui/react";
 import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa";
-import AddRoleModal from "@/components/dashboard/admin/AddRoleModal";
+import AddRoleModal from "@/components/dashboard/admin/modals/AddRoleModal";
 
 const RoleAndPermission = () => {
   const [roles, setRoles] = useState([]);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Table } from "@heroui/react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import CategoryModal from "./CategoryModal";
+import CategoryModal from "./modals/CategoryModal";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
