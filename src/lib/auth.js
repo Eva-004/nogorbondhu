@@ -19,15 +19,25 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
   },
-  
+
   user: {
     additionalFields: {
       role: {
         defaultValue: "user",
       },
+      authority: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      department: {
+        type: "string",
+        required: false,
+        input: false,
+      },
     },
   },
-  
+
   plugins: [
     admin(),
   ],
