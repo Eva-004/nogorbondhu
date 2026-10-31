@@ -10,26 +10,27 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import NavLink from "@/components/shared/NavLink";
 
-const DashboardNavbar = ({ user,permissions }) => {
+const DashboardNavbar = ({ user, permissions }) => {
   const role = user?.role ?? "user";
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  
 
   const NavList = (
-       <>
-          <nav className="flex flex-col gap-1">
-            {permissions.map((item) => (
-              <NavLink
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-        </>
+    <>
+      <nav className="flex flex-col gap-1">
+        {permissions.map((item) => (
+          <NavLink
+            key={item.href}
+            href={item.href}
+            onClick={() => setOpen(false)}
+            className="flex items-center text-emerald-100 gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 hover:bg-emerald-800/60 hover:text-white"
+          >
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
+    </>
   );
 
   const handleLogOut = async () => {
@@ -40,7 +41,7 @@ const DashboardNavbar = ({ user,permissions }) => {
 
   return (
     <div className="navbar bg-[#F0FDF4] border-b border-emerald-100 shadow-sm px-4 py-2 flex items-center justify-between w-full">
-    
+
       <div className="flex items-center gap-3">
         <Button
           className="md:hidden bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 min-w-10 h-10"
@@ -51,11 +52,11 @@ const DashboardNavbar = ({ user,permissions }) => {
           <Bars />
         </Button>
         <h2 className="text-lg md:text-xl font-semibold text-emerald-950 capitalize">
-          {role ? role : "Admin"} Dashboard
+          {role ? role : "User"} Dashboard {role !== "admin" && <span className="text-secondary">/ {user?.name}</span>}
         </h2>
       </div>
 
-      
+
       <div className="flex gap-3">
         <ProfileDropdown
           handleLogOut={handleLogOut}
@@ -66,7 +67,7 @@ const DashboardNavbar = ({ user,permissions }) => {
         />
       </div>
 
-    
+
       <Drawer isOpen={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
         <Drawer.Backdrop>
           <Drawer.Content placement="left" className="max-w-64">

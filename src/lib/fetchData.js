@@ -41,5 +41,10 @@ export const getCategories = async()=>{
     const data = await res.json();
  return data;
 }
+export const getReport = async(id)=>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports/${id}`);
+    const data = await res.json();
+ return data;
+}
 
 
