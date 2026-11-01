@@ -8,7 +8,7 @@ const ProblemDetailsPage = async({params}) => {
   console.log(reportData);
     return (
         <div>
-            <ReportDetails reports={reportData}/>
+            <ReportDetails report={reportData}/>
         </div>
     );
 };

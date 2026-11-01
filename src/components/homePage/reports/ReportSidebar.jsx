@@ -1,6 +1,13 @@
+'use client'
+import AuthorityReportAction from "@/components/dashboard/authority/AuthorityReportAction";
+import { authClient } from "@/lib/auth-client";
+import { usePathname } from "next/navigation";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
 const ReportSidebar = ({ report }) => {
+    const userData = authClient.useSession();
+    const user = userData?.data?.user;
+    const pathName = usePathname();
   return (
     <div className="space-y-4">
       <div className="rounded-3xl bg-[#DDF2E4] p-5 sm:p-6">
@@ -39,8 +46,9 @@ const ReportSidebar = ({ report }) => {
           </p>
         </div>
       </div>
-
-      {/* <AuthorityReportAction report={report} /> */}
+      {
+        user?.role === "authority" && pathName.includes("dashboard/authority") && <AuthorityReportAction report={report} />
+      }
     </div>
   );
 };

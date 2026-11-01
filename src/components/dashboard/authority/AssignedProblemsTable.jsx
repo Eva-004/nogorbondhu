@@ -1,4 +1,5 @@
 import { Table } from "@heroui/react";
+import Link from "next/link";
 
 const AssignedProblemsTable = ({ reports }) => {
     const priorityColors = {
@@ -54,12 +55,11 @@ const AssignedProblemsTable = ({ reports }) => {
                                             </span>
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <button
-                                                type="button"
-                                                className="font-medium text-[#0F6848] hover:underline"
-                                            >
+                                            <Link
+                                                href={`/dashboard/authority/assigned-problems/${report._id}`}
+                                                className="font-medium text-[#0F6848] hover:underline">
                                                 View
-                                            </button>
+                                            </Link>
                                         </Table.Cell>
                                     </Table.Row>
                                 ))

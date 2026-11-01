@@ -20,9 +20,9 @@ const ReportDetails = ({ report }) => {
   low: "bg-[#DDF2E4] text-[#0F6848]",
  };
   const [supportCount, setSupportCount] = useState(
-    report?.supportCount || 184
+    report?.supportCount || 0
   );
-  const [fakeCount, setFakeCount] = useState(report?.fakeCount || 27);
+  const [fakeCount, setFakeCount] = useState(report?.fakeCount || 0);
   const [isSupported, setIsSupported] = useState(false);
   const [isFake, setIsFake] = useState(false);
 
@@ -112,9 +112,9 @@ const ReportDetails = ({ report }) => {
 
             <div className="mt-6 flex flex-wrap gap-4">
               <button
-                className={`flex items-center gap-3 rounded-full border px-6 py-3 font-bold transition`}
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 font-bold transition`}
               >
-                <FaThumbsUp className="text-xl" />
+                <FaThumbsUp className="text-lg" />
                 Support
 
                 <span className="rounded-full bg-[#CDEFD9] px-3 py-1">
@@ -125,7 +125,7 @@ const ReportDetails = ({ report }) => {
               <button
                 className={`flex items-center gap-3 rounded-full border px-6 py-3 font-bold text-[#52606D] transition`}
               >
-                <FaThumbsDown className="text-xl" />
+                <FaThumbsDown className="text-lg" />
                 Fake
 
                 <span className="rounded-full bg-[#E8EBEE] px-3 py-1">
