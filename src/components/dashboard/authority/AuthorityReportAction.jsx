@@ -9,30 +9,30 @@ const AuthorityReportAction = ({ report }) => {
 
   const handleStatusChange = async (newStatus) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports/${report._id}/status`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ status: newStatus }),
-            }
-        );
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            toast.error(data.message || "Failed to update status");
-            return;
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports/${report._id}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
         }
+      );
 
-        setStatus(newStatus);
-        toast.success("Report status updated successfully");
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Failed to update status");
+        return;
+      }
+
+      setStatus(newStatus);
+      toast.success("Report status updated successfully");
 
     } catch (error) {
-        toast.error("Something went wrong!");
+      toast.error("Something went wrong!");
     }
-};
+  };
   return (
     <div className="rounded-3xl bg-[#DDF2E4] p-5 sm:p-6">
       <p className="mb-2 text-sm font-bold uppercase text-[#0F8A4D]">
@@ -57,21 +57,41 @@ const AuthorityReportAction = ({ report }) => {
         <option value="in-progress">Status: In Progress</option>
       </select>
 
-      <button
-        onClick={() => handleStatusChange("resolved")}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F6848] py-3 font-bold text-white transition hover:bg-[#0b5037]"
-      >
-        <FaCheck />
-        Mark as Resolved
-      </button>
+      {status === "resolved" ? (
+        <button
+          disabled
+          className="mt-4 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#0F6848] py-3 font-bold text-white opacity-70"
+        >
+          <FaCheck />
+          Report Resolved
+        </button>
+      ) : status === "rejected" ? (
+        <button
+          disabled
+          className="mt-4 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-red-600 py-3 font-bold text-white opacity-70"
+        >
+          <FaTimes />
+          Report Rejected
+        </button>
+      ) : (
+        <>
+          <button
+            onClick={() => handleStatusChange("resolved")}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F6848] py-3 font-bold cursor-pointer text-white transition hover:bg-[#0b5037]"
+          >
+            <FaCheck />
+            Mark as Resolved
+          </button>
 
-      <button
-        onClick={() => handleStatusChange("rejected")}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F6848] py-3 font-bold text-white transition hover:bg-[#0b5037]"
-      >
-        <FaTimes />
-        Reject (Fake Report)
-      </button>
+          <button
+            onClick={() => handleStatusChange("rejected")}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F6848] py-3 font-bold cursor-pointer text-white transition hover:bg-[#0b5037]"
+          >
+            <FaTimes />
+            Reject (Fake Report)
+          </button>
+        </>
+      )}
     </div>
   );
 };
