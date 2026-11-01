@@ -10,6 +10,7 @@ const AssignedProblemsTable = ({ reports }) => {
     const statusColors = {
         pending: "badge-warning",
         "under-review": "badge-info",
+        "in-progress": "bg-purple-50 text-purple-700 border-purple-200",
         resolved: "badge-success",
     };
     return (

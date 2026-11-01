@@ -8,6 +8,7 @@ import {
     FaArrowRight,
     FaCalendarAlt,
 } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const ReportCard = ({ report }) => {
     const priorityColors = {
@@ -42,6 +43,11 @@ const ReportCard = ({ report }) => {
               year: "numeric",
           })
         : "";
+        
+        const router = useRouter();
+        const handleDetails = ()=>{
+             router.push(`/reports/${report?._id}`);
+        }
 
     return (
         <Card className="group h-full min-w-0 overflow-hidden rounded-2xl border border-[#D5EADF] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -111,7 +117,7 @@ const ReportCard = ({ report }) => {
                 </div>
 
                 <div className="mt-auto border-t border-[#E4F0E8] pt-4">
-                    <Button
+                    <Button onClick={handleDetails}
                         className="w-full min-w-0 bg-[#0F6848] font-semibold text-white hover:bg-[#0B5037]"
                         radius="lg"
                     >
