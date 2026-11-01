@@ -9,12 +9,6 @@ export default function Hero() {
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
         <div className="lg:col-span-6 flex flex-col items-start space-y-5 sm:space-y-6">
-          
-          <div className="inline-flex items-center gap-2 bg-[#DDF2E4] text-[#0F6848] px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide">
-            <HiOutlineSparkles className="w-4 h-4 text-[#0F6848]" />
-            <span>Make Your Community Better</span>
-          </div>
-
           <h1 className="text-2xl sm:text-3xl lg:text-[52px] font-extrabold text-[#11382B] tracking-tight leading-[1.15]">
             Report Problems. <br className="hidden sm:inline" />
             Improve Your Community.

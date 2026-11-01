@@ -2,14 +2,37 @@
 
 import { useState } from "react";
 import { FaCheck, FaLock, FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const AuthorityReportAction = ({ report }) => {
   const [status, setStatus] = useState(report.status);
 
-  const handleStatusChange = (newStatus) => {
-    setStatus(newStatus);
-  };
+  const handleStatusChange = async (newStatus) => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/reports/${report._id}/status`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status: newStatus }),
+            }
+        );
 
+        const data = await res.json();
+
+        if (!res.ok) {
+            toast.error(data.message || "Failed to update status");
+            return;
+        }
+
+        setStatus(newStatus);
+        toast.success("Report status updated successfully");
+
+    } catch (error) {
+        toast.error("Something went wrong!");
+    }
+};
   return (
     <div className="rounded-3xl bg-[#DDF2E4] p-5 sm:p-6">
       <p className="mb-2 text-sm font-bold uppercase text-[#0F8A4D]">
@@ -30,9 +53,8 @@ const AuthorityReportAction = ({ report }) => {
         className="mt-5 w-full rounded-xl border border-[#CBD2DA] bg-white px-4 py-3 font-medium text-[#24344F] outline-none"
       >
         <option value="pending">Status: Pending</option>
+        <option value="under-review">Status: Under Review</option>
         <option value="in-progress">Status: In Progress</option>
-        <option value="resolved">Status: Resolved</option>
-        <option value="rejected">Status: Rejected</option>
       </select>
 
       <button

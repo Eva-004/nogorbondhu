@@ -5,9 +5,10 @@ import {
     FiClock,
     FiRefreshCw,
     FiCheckCircle,
+    FiEye,
 } from "react-icons/fi";
 
-const ProblemStatCards = ({reports}) => {
+const ProblemStatCards = ({ reports }) => {
     const pending = reports.filter(rp => rp.status === "pending");
     const underReview = reports.filter(rp => rp.status === "under-review");
     const resolved = reports.filter(rp => rp.status === "resolved");
@@ -29,9 +30,16 @@ const ProblemStatCards = ({reports}) => {
         {
             title: "Under Review",
             value: underReview.length,
-            icon: FiRefreshCw,
+            icon: FiEye,
             color: "border-t-[#3984E8]",
             iconColor: "bg-[#E8F1FF] text-[#2563EB]",
+        },
+        {
+            title: "In Progress",
+            value: reports.filter(rp => rp.status === "in-progress").length,
+            icon: FiRefreshCw,
+            color: "border-t-[#8B5CF6]",
+            iconColor: "bg-[#F1EAFE] text-[#7C3AED]",
         },
         {
             title: "Resolved",
@@ -43,7 +51,7 @@ const ProblemStatCards = ({reports}) => {
     ];
 
     return (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             {stats.map((stat) => {
                 const Icon = stat.icon;
 
