@@ -109,7 +109,7 @@ const Navbar = () => {
 
                         <li>
                             <Dropdown>
-                                <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white hover:font-bold'>
+                                <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white text-black hover:font-bold'>
                                     <span>Reports</span><RiArrowDropDownLine size={24} />
                                 </Dropdown.Trigger>
                                 <Dropdown.Popover>
@@ -139,7 +139,7 @@ const Navbar = () => {
 
                     <li>
                         <Dropdown>
-                            <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white hover:font-bold'>
+                            <Dropdown.Trigger className='hover:bg-[#059669] hover:text-white text-black hover:font-bold'>
                                 <span>Public Services</span><RiArrowDropDownLine size={24} />
                             </Dropdown.Trigger>
                             <Dropdown.Popover>

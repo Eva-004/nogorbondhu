@@ -15,8 +15,10 @@ import { FaLock, FaEnvelope } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+    const router = useRouter();
     const onSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -25,13 +27,14 @@ const LoginPage = () => {
         const { error } = await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/",
+           
         })
         if (error) {
             toast.error(error.message || "Login failed");
             return;
         }
-        toast.success("Login Successful!")
+        toast.success("Login Successful!");
+        router.push("/");
     };
 
     const handleGoogleLogin = async () => {
