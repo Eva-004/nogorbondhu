@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Drawer } from "@heroui/react";
@@ -11,12 +11,22 @@ import { toast } from "react-toastify";
 import NavLink from "@/components/shared/NavLink";
 import { FiBell } from "react-icons/fi";
 import NotificationModal from "@/components/Modals/NotificationModal";
+import { getNotifications } from "@/lib/fetchData";
 
 const DashboardNavbar = ({ user, permissions }) => {
   const role = user?.role ?? "user";
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(()=>{
+     const data = getNotifications(user?.id);
+     if(data.success){
+      setNotifications(data.notifications);
+      setUnreadCount(data.unreadCount)
+     }
+  },[user?.id])
 
   const NavList = (
     <>
@@ -60,7 +70,7 @@ const DashboardNavbar = ({ user, permissions }) => {
 
 
       <div className="flex gap-3 items-center">
-       <NotificationModal/>
+       <NotificationModal notifications={notifications}/>
 
         <ProfileDropdown
           handleLogOut={handleLogOut}

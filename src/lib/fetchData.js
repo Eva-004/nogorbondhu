@@ -46,5 +46,10 @@ export const getReport = async(id)=>{
     const data = await res.json();
  return data;
 }
+export const getNotifications = async(userId)=>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/notifications/${userId}`);
+    const data = await res.json();
+ return data;
+}
 
 
