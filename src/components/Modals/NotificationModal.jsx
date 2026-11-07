@@ -10,7 +10,7 @@ import {
 
 const NotificationModal = ({
     notifications = [],
-    onMarkAllRead,
+    onMarkRead,
 }) => {
     const unreadCount = notifications.filter(
         (item) => !item.isRead
@@ -55,7 +55,6 @@ const NotificationModal = ({
 
                         {unreadCount > 0 && (
                             <button
-                                onClick={onMarkAllRead}
                                 className="flex items-center gap-1 text-sm text-[#0F6848] hover:text-[#0b5037] font-medium"
                             >
                                 <FiCheckCircle size={17} />
@@ -69,7 +68,7 @@ const NotificationModal = ({
                     <div className="max-h-[380px] overflow-y-auto">
                         {recentNotifications.length > 0 ? (
                             recentNotifications.map((item) => (
-                                <div
+                                <div onClick={() => !item.isRead && onMarkRead(item._id)}
                                     key={item._id}
                                     className={`flex gap-3 px-5 py-4 border-b border-[#D5EADF] hover:bg-[#EBF7F0] transition ${!item.isRead ? "bg-[#F0F8F3]" : ""
                                         }`}

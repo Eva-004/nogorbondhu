@@ -17,16 +17,14 @@ const DashboardNavbar = ({ user, permissions }) => {
   const role = user?.role ?? "user";
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
-  useEffect(()=>{
-     const data = getNotifications(user?.id);
-     if(data.success){
+  useEffect(() => {
+    const data = getNotifications(user?.id);
+    if (data.success) {
       setNotifications(data.notifications);
-      setUnreadCount(data.unreadCount)
-     }
-  },[user?.id])
+    }
+  }, [user?.id])
 
   const NavList = (
     <>
@@ -44,6 +42,31 @@ const DashboardNavbar = ({ user, permissions }) => {
       </nav>
     </>
   );
+
+  const handleMarkRead = async (id) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/notifications/${id}/read`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item._id === id ? { ...item, isRead: true } : item
+        )
+      );
+    }
+  };
 
   const handleLogOut = async () => {
     await authClient.signOut();
@@ -70,7 +93,7 @@ const DashboardNavbar = ({ user, permissions }) => {
 
 
       <div className="flex gap-3 items-center">
-       <NotificationModal notifications={notifications}/>
+        <NotificationModal notifications={notifications} onMarkRead={handleMarkRead}/>
 
         <ProfileDropdown
           handleLogOut={handleLogOut}
