@@ -9,12 +9,13 @@ import ProfileDropdown from "@/components/shared/ProfileDropdown";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import NavLink from "@/components/shared/NavLink";
+import { FiBell } from "react-icons/fi";
 
 const DashboardNavbar = ({ user, permissions }) => {
   const role = user?.role ?? "user";
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  
+ const [unreadCount, setUnreadCount] = useState(0);
 
   const NavList = (
     <>
@@ -57,15 +58,18 @@ const DashboardNavbar = ({ user, permissions }) => {
       </div>
 
 
-      <div className="flex gap-3">
-        <ProfileDropdown
-          handleLogOut={handleLogOut}
-          image={user?.image}
-          name={user?.name}
-          email={user?.email}
-          role={user?.role}
-        />
-      </div>
+      <button
+        className="relative p-2 rounded-full text-emerald-700 hover:bg-emerald-100 transition"
+        title="Notifications"
+      >
+        <FiBell size={22} />
+
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-5 h-5 px-1 text-[10px] font-bold text-white bg-red-500 rounded-full">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
+      </button>
 
 
       <Drawer isOpen={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
