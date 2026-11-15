@@ -1,9 +1,11 @@
+
 "use client";
 
 import { Modal, Button, TextField, Label, Input, Surface } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { HiOutlineShieldCheck, HiPlus } from "react-icons/hi2";
 import { toast } from "react-toastify";
+import bd from "bd-geojson";
 
 export default function AddAuthorityModal({ departments }) {
     const [divisions, setDivisions] = useState([]);
@@ -17,22 +19,10 @@ export default function AddAuthorityModal({ departments }) {
     const [selectedUpazila, setSelectedUpazila] = useState("");
 
     useEffect(() => {
-        const fetchDivisions = async () => {
-
-            const res = await fetch(
-                "https://bdapi.vercel.app/api/v.1/division"
-            );
-
-            const data = await res.json();
-
-            setDivisions(data.data);
-
-        };
-
-        fetchDivisions();
+        setDivisions(bd.getDivisions());
     }, []);
 
-    const handleDivisionChange = async (e) => {
+    const handleDivisionChange = (e) => {
         const divisionId = e.target.value;
 
         setSelectedDivision(divisionId);
@@ -43,14 +33,12 @@ export default function AddAuthorityModal({ departments }) {
         setUpazilas([]);
         setUnions([]);
 
-        const res = await fetch(`https://bdapi.vercel.app/api/v.1/district/${divisionId}`
-        );
-
-        const data = await res.json();
-        setDistricts(data.data);
+        if (divisionId) {
+            setDistricts(bd.getDistrictsByDivision(divisionId));
+        }
     };
 
-    const handleDistrictChange = async (e) => {
+    const handleDistrictChange = (e) => {
         const districtId = e.target.value;
 
         setSelectedDistrict(districtId);
@@ -59,35 +47,29 @@ export default function AddAuthorityModal({ departments }) {
         setUpazilas([]);
         setUnions([]);
 
-        const res = await fetch(
-            `https://bdapi.vercel.app/api/v.1/upazilla/${districtId}`
-        );
-
-        const data = await res.json();
-        setUpazilas(data.data);
+        if (districtId) {
+            setUpazilas(bd.getUpazilasByDistrict(districtId));
+        }
     };
-    const handleUpazilaChange = async (e) => {
+
+    const handleUpazilaChange = (e) => {
         const upazilaId = e.target.value;
 
         setSelectedUpazila(upazilaId);
         setUnions([]);
-
-        const res = await fetch(
-            `https://bdapi.vercel.app/api/v.1/union/${upazilaId}`
-        );
-
-        const data = await res.json();
-        setUnions(data.data);
     };
 
     const [isOpen, setIsOpen] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const authorities = Object.fromEntries(formData.entries());
+
         const departmentName = departments.find(
             (department) => department._id === authorities.department_id
         );
+
         const authorityData = {
             authorityName: authorities.authorityName,
             authorityType: authorities.authorityType,
@@ -101,6 +83,7 @@ export default function AddAuthorityModal({ departments }) {
             },
             status: authorities.status,
         };
+
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/authorities`,
             {
@@ -111,16 +94,17 @@ export default function AddAuthorityModal({ departments }) {
                 body: JSON.stringify(authorityData),
             }
         );
+
         const data = await res.json();
+
         if (!res.ok) {
             toast.error(data.message);
             return;
-        }
-        else {
+        } else {
             toast.success("Added authority successfully!");
             setIsOpen(false);
         }
-    }
+    };
 
     return (
         <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
@@ -201,7 +185,6 @@ export default function AddAuthorityModal({ departments }) {
                                     >
                                         <Label isRequired className="text-xs font-semibold text-[#11382B] mb-1 block">
                                             Department
-
                                         </Label>
 
                                         <select
@@ -262,25 +245,25 @@ export default function AddAuthorityModal({ departments }) {
 
                                         {(coverageLevel === "district" ||
                                             coverageLevel === "upazila") && (
-                                                <div>
-                                                    <Label isRequired>District</Label>
-                                                    <select
-                                                        name="districtId"
-                                                        value={selectedDistrict}
-                                                        onChange={handleDistrictChange}
-                                                        className="w-full rounded-lg border px-3 py-2.5"
-                                                        required
-                                                    >
-                                                        <option value="">Select District</option>
+                                            <div>
+                                                <Label isRequired>District</Label>
+                                                <select
+                                                    name="districtId"
+                                                    value={selectedDistrict}
+                                                    onChange={handleDistrictChange}
+                                                    className="w-full rounded-lg border px-3 py-2.5"
+                                                    required
+                                                >
+                                                    <option value="">Select District</option>
 
-                                                        {districts.map((district) => (
-                                                            <option key={district.id} value={district.id}>
-                                                                {district.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            )}
+                                                    {districts.map((district) => (
+                                                        <option key={district.id} value={district.id}>
+                                                            {district.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        )}
 
                                         {coverageLevel === "upazila" && (
                                             <div>
@@ -333,7 +316,8 @@ export default function AddAuthorityModal({ departments }) {
                                             Cancel
                                         </Button>
 
-                                        <Button type="submit"
+                                        <Button
+                                            type="submit"
                                             className="px-5 py-2 text-sm font-semibold text-white bg-[#0F6848] hover:bg-[#0b5037] rounded-lg shadow-sm transition-all"
                                         >
                                             Save

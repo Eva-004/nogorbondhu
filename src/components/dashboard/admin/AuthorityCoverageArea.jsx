@@ -1,58 +1,39 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { HiOutlineMapPin } from 'react-icons/hi2';
+import bd from "bd-geojson";
 
 const AuthorityCoverageArea = ({ authority }) => {
     const [division, setDivision] = useState(null);
     const [district, setDistrict] = useState(null);
     const [upazila, setUpazila] = useState(null);
 
-    useEffect(() => {
-        const fetchLocationData = async () => {
-            if (authority?.coverage?.divisionId) {
-                const divisionRes = await fetch(
-                    `https://bdapi.vercel.app/api/v.1/division`
-                );
+   useEffect(() => {
+    const divisionId = authority?.coverage?.divisionId;
+    const districtId = authority?.coverage?.districtId;
+    const upazilaId = authority?.coverage?.upazilaId;
 
-                const divisionData = await divisionRes.json();
+    if (divisionId) {
+        const foundDivision = bd.getDivisions().find(
+            (item) => String(item.id) === String(divisionId)
+        );
+        setDivision(foundDivision || null);
+    }
 
-                const foundDivision = divisionData.data.find(
-                    (item) => item.id === authority.coverage.divisionId
-                );
+    if (districtId && divisionId) {
+        const foundDistrict = bd.getDistrictsByDivision(divisionId).find(
+            (item) => String(item.id) === String(districtId)
+        );
+        setDistrict(foundDistrict || null);
+    }
 
-                setDivision(foundDivision);
-            }
-
-            if (authority?.coverage?.districtId) {
-                const districtRes = await fetch(
-                    `https://bdapi.vercel.app/api/v.1/district/${authority.coverage.divisionId}`
-                );
-
-                const districtData = await districtRes.json();
-
-                const foundDistrict = districtData.data.find(
-                    (item) => item.id === authority.coverage.districtId
-                );
-
-                setDistrict(foundDistrict);
-            }
-            if (authority?.coverage?.upazilaId) {
-                const upazilaRes = await fetch(
-                    `https://bdapi.vercel.app/api/v.1/upazilla/${authority.coverage.districtId}`
-                );
-
-                const upazilaData = await upazilaRes.json();
-
-                const foundUpazila = upazilaData.data.find(
-                    (item) => item.id === authority.coverage.upazilaId
-                );
-
-                setUpazila(foundUpazila);
-            }
-        };
-
-        fetchLocationData();
-    }, []);
+    if (upazilaId && districtId) {
+        const foundUpazila = bd.getUpazilasByDistrict(districtId).find(
+            (item) => String(item.id) === String(upazilaId)
+        );
+        setUpazila(foundUpazila || null);
+    }
+}, [authority]);
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-6">
             <div className="mb-5 flex items-center gap-3">

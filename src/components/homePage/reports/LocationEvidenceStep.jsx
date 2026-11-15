@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaImages } from "react-icons/fa";
+import bd from "bd-geojson";
 
 const LocationEvidenceStep = ({
     formRef,
@@ -20,18 +21,8 @@ const LocationEvidenceStep = ({
     const [districts, setDistricts] = useState([]);
     const [upazilas, setUpazilas] = useState([]);
 
-
     useEffect(() => {
-        const fetchDivisions = async () => {
-            const res = await fetch(
-                "https://bdapi.vercel.app/api/v.1/division"
-            );
-
-            const data = await res.json();
-            setDivisions(data.data);
-        };
-
-        fetchDivisions();
+        setDivisions(bd.getDivisions());
     }, []);
 
     useEffect(() => {
@@ -40,16 +31,9 @@ const LocationEvidenceStep = ({
             return;
         }
 
-        const fetchDistricts = async () => {
-            const res = await fetch(
-                `https://bdapi.vercel.app/api/v.1/district/${formData.division.id}`
-            );
-
-            const data = await res.json();
-            setDistricts(data.data);
-        };
-
-        fetchDistricts();
+        setDistricts(
+            bd.getDistrictsByDivision(formData.division.id)
+        );
     }, [formData.division.id]);
 
     useEffect(() => {
@@ -58,18 +42,10 @@ const LocationEvidenceStep = ({
             return;
         }
 
-        const fetchUpazilas = async () => {
-            const res = await fetch(
-                `https://bdapi.vercel.app/api/v.1/upazilla/${formData.district.id}`
-            );
-
-            const data = await res.json();
-            setUpazilas(data.data);
-        };
-
-        fetchUpazilas();
+        setUpazilas(
+            bd.getUpazilasByDistrict(formData.district.id)
+        );
     }, [formData.district.id]);
-
 
     const uploadImage = async (file) => {
         const body = new FormData();
@@ -92,50 +68,48 @@ const LocationEvidenceStep = ({
         return data.url;
     };
 
+    const handleEvidenceChange = async (e) => {
+        const files = Array.from(e.target.files);
+        e.target.value = "";
 
-   
-const handleEvidenceChange = async (e) => {
-    const files = Array.from(e.target.files);
-    e.target.value = "";
+        const newEvidence = files.map((file) => ({
+            file,
+            preview: URL.createObjectURL(file),
+            url: "",
+            uploading: true,
+        }));
 
-    const newEvidence = files.map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-        url: "",
-        uploading: true,
-    }));
+        setFormData((prev) => ({
+            ...prev,
+            evidence: [...prev.evidence, ...newEvidence],
+        }));
 
-    setFormData((prev) => ({
-        ...prev,
-        evidence: [...prev.evidence, ...newEvidence],
-    }));
+        for (const file of files) {
+            try {
+                const url = await uploadImage(file);
 
-    for (const file of files) {
-        try {
-            const url = await uploadImage(file);
+                setFormData((prev) => ({
+                    ...prev,
+                    evidence: prev.evidence.map((item) =>
+                        item.file === file
+                            ? { ...item, url, uploading: false }
+                            : item
+                    ),
+                }));
+            } catch (error) {
+                console.error("Image upload failed:", error);
 
-            setFormData((prev) => ({
-                ...prev,
-                evidence: prev.evidence.map((item) =>
-                    item.file === file
-                        ? { ...item, url, uploading: false }
-                        : item
-                ),
-            }));
-        } catch (error) {
-            console.error("Image upload failed:", error);
-
-            setFormData((prev) => ({
-                ...prev,
-                evidence: prev.evidence.map((item) =>
-                    item.file === file
-                        ? { ...item, uploading: false, uploadFailed: true }
-                        : item
-                ),
-            }));
+                setFormData((prev) => ({
+                    ...prev,
+                    evidence: prev.evidence.map((item) =>
+                        item.file === file
+                            ? { ...item, uploading: false, uploadFailed: true }
+                            : item
+                    ),
+                }));
+            }
         }
-    }
-};
+    };
 
     const handleRemoveImage = (index) => {
         setFormData((prev) => {
@@ -181,7 +155,9 @@ const handleEvidenceChange = async (e) => {
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="flex flex-col gap-1.5">
-                        <Label isRequired>Division</Label>
+                        <Label className="text-black" isRequired>
+                            Division
+                        </Label>
 
                         <select
                             name="division"
@@ -225,7 +201,9 @@ const handleEvidenceChange = async (e) => {
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                        <Label isRequired>District</Label>
+                        <Label className="text-black" isRequired>
+                            District
+                        </Label>
 
                         <select
                             name="district"
@@ -266,7 +244,9 @@ const handleEvidenceChange = async (e) => {
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                        <Label isRequired>Upazila / Thana</Label>
+                        <Label className="text-black" isRequired>
+                            Upazila / Thana
+                        </Label>
 
                         <select
                             name="upazila"
@@ -307,9 +287,12 @@ const handleEvidenceChange = async (e) => {
                         name="areaWard"
                         defaultValue={formData.areaWard}
                     >
-                        <Label>Area / Ward</Label>
+                        <Label className="text-black">Area / Ward</Label>
 
-                        <Input placeholder="e.g. Ward 5, Ambarkhana" />
+                        <Input
+                            placeholder="e.g. Ward 5, Ambarkhana"
+                            className="placeholder:text-gray-800 w-full"
+                        />
                     </TextField>
                 </div>
 
@@ -318,10 +301,11 @@ const handleEvidenceChange = async (e) => {
                     name="specificLocation"
                     defaultValue={formData.specificLocation}
                 >
-                    <Label>Specific Location</Label>
+                    <Label className="text-black">Specific Location</Label>
 
                     <Input
                         placeholder="e.g. Near Ambarkhana Point, beside the main road"
+                        className="placeholder:text-gray-800 w-full"
                     />
 
                     <Description>

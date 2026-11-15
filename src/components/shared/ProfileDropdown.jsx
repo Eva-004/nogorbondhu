@@ -60,6 +60,7 @@ const ProfileDropdown = ({ handleLogOut, image, name, email, role }) => {
         <Dropdown.Menu>
           <Dropdown.Item
             key="dashboard"
+            className="text-gray-600"
             href={`/dashboard/${role}`}
           >
             <div className="flex items-center gap-2">
@@ -70,7 +71,7 @@ const ProfileDropdown = ({ handleLogOut, image, name, email, role }) => {
 
           <Dropdown.Item
             key="logout"
-            color="danger"
+            className="text-red-500"
             onClick={handleLogOut}
           >
             <div className="flex items-center justify-between w-full gap-2">

@@ -15,6 +15,7 @@ import {
   EmptyState,
   useFilter,
 } from "@heroui/react";
+import bd from "bd-geojson";
 
 const ReportSearchAndFilters = ({ filters, onFiltersChange }) => {
   const [upazilas, setUpazilas] = useState([]);
@@ -28,30 +29,8 @@ const ReportSearchAndFilters = ({ filters, onFiltersChange }) => {
     sensitivity: "base",
   });
 
-  useEffect(() => {
-    const fetchUpazilas = async () => {
-      setLoadingUpazilas(true);
-
-      const res = await fetch(
-        "https://bdapi.vercel.app/api/v.1/upazilla"
-      );
-
-      const result = await res.json();
-
-      setUpazilas(result.data || []);
-      setLoadingUpazilas(false);
-    };
-
-    const fetchCategories = async()=>{
-      setLoadingCategories(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/problemCategories`);
-      const data = await res.json();
-      setCategories(data);
-      setLoadingCategories(false);
-    }
-
-    fetchUpazilas();
-    fetchCategories();
+   useEffect(() => {
+    setUpazilas(bd.getUpazilas());
   }, []);
 
   const filteredUpazilas = upazilas.filter((item) =>

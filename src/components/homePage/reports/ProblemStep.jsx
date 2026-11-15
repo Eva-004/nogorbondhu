@@ -48,18 +48,20 @@ const ProblemStep = ({ formRef, formData, setFormData }) => {
                     name="title"
                     defaultValue={formData.title}
                 >
-                    <Label>Problem Title</Label>
+                    <Label className="text-black">Problem Title</Label>
 
                     <Input
                         placeholder="e.g. Damaged road near the main market"
-                        className="mt-1"
+                        className="mt-1 w-full placeholder:text-gray-800"
                     />
 
                     <FieldError />
                 </TextField>
 
                 <div className="flex flex-col gap-1.5">
-                    <Label isRequired>Problem Category</Label>
+                    <Label className="text-black" isRequired>
+                        Problem Category
+                    </Label>
 
                     <select
                         name="category"
@@ -95,7 +97,7 @@ const ProblemStep = ({ formRef, formData, setFormData }) => {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                    <Label>Priority</Label>
+                    <Label className="text-black">Priority</Label>
 
                     <select
                         name="priority"
@@ -118,11 +120,14 @@ const ProblemStep = ({ formRef, formData, setFormData }) => {
                     name="description"
                     defaultValue={formData.description}
                 >
-                    <Label>Problem Description</Label>
+                    <Label className="text-black">
+                        Problem Description
+                    </Label>
 
                     <TextArea
                         placeholder="Describe what happened, where the problem is, and how it is affecting the community..."
                         rows={6}
+                        className="placeholder:text-gray-800"
                     />
 
                     <FieldError />

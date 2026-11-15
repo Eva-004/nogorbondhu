@@ -1,4 +1,5 @@
 "use client"
+import ProfilePicture from "@/components/dashboard/user/ProfilePicture";
 import { authClient } from "@/lib/auth-client";
 import React from "react";
 import { FaEdit, FaMapMarkerAlt, FaPhone, FaEnvelope, FaCalendarAlt } from "react-icons/fa";
@@ -21,7 +22,7 @@ const Profile = () => {
                     <div className="px-5 sm:px-8 pb-8">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14">
                             <div className="flex items-end gap-4">
-                                {/* <ProfilePicture image={user?.image} name={user?.name} /> */}
+                                <ProfilePicture image={user?.image} name={user?.name} />
 
                                 <div className="pb-2">
                                     <h2 className="text-xl font-bold text-white">
