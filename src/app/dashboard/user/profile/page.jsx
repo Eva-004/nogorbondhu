@@ -1,6 +1,7 @@
 
 "use client";
 
+import EditProfileModal from "@/components/dashboard/user/EditProfileModal";
 import ProfilePicture from "@/components/dashboard/user/ProfilePicture";
 import { authClient } from "@/lib/auth-client";
 import React from "react";
@@ -17,6 +18,14 @@ const Profile = () => {
 
         if (error) {
             throw new Error(error.message || "Failed to update profile picture");
+        }
+    };
+
+    const handleProfileUpdate = async (formData) => {
+        const { error } = await authClient.updateUser(formData);
+
+        if (error) {
+            throw new Error(error.message || "Update failed");
         }
     };
 
@@ -48,8 +57,10 @@ const Profile = () => {
                             </div>
 
                             <button className="flex items-center justify-center gap-2 bg-[#0F6848] hover:bg-[#0b5037] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer">
-                                <FaEdit />
-                                Edit Profile
+                                <EditProfileModal
+                                    user={user}
+                                    onUpdate={handleProfileUpdate}
+                                />
                             </button>
                         </div>
 
