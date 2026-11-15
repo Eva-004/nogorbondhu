@@ -1,15 +1,27 @@
-"use client"
+
+"use client";
+
 import ProfilePicture from "@/components/dashboard/user/ProfilePicture";
 import { authClient } from "@/lib/auth-client";
 import React from "react";
 import { FaEdit, FaMapMarkerAlt, FaPhone, FaEnvelope, FaCalendarAlt } from "react-icons/fa";
 
 const Profile = () => {
-       const userData = authClient.useSession();
-        const user = userData?.data?.user;
-        console.log(user);
+    const userData = authClient.useSession();
+    const user = userData?.data?.user;
+
+    const handleImageChange = async (imageUrl) => {
+        const { error } = await authClient.updateUser({
+            image: imageUrl,
+        });
+
+        if (error) {
+            throw new Error(error.message || "Failed to update profile picture");
+        }
+    };
+
     return (
-        <div className="min-h-screen  px-4 py-8 sm:px-6 lg:px-10">
+        <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-10">
             <div className="max-w-4xl mx-auto space-y-6">
                 <div>
                     <h1 className="text-2xl font-bold text-[#11382B]">My Profile</h1>
@@ -22,10 +34,14 @@ const Profile = () => {
                     <div className="px-5 sm:px-8 pb-8">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14">
                             <div className="flex items-end gap-4">
-                                <ProfilePicture image={user?.image} name={user?.name} />
+                                <ProfilePicture
+                                    image={user?.image}
+                                    name={user?.name}
+                                    onImageChange={handleImageChange}
+                                />
 
                                 <div className="pb-2">
-                                    <h2 className="text-xl font-bold text-white">
+                                    <h2 className="text-xl font-bold ">
                                         {user?.name || "Your Name"}
                                     </h2>
                                 </div>
