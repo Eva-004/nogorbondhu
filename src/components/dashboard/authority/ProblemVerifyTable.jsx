@@ -84,7 +84,7 @@ const ProblemVerifyTable = ({ reports}) => {
 
                                         <Table.Cell>
                                             <span className="badge badge-soft badge-info">
-                                                Under Review
+                                                {report.status}
                                             </span>
                                         </Table.Cell>
 
